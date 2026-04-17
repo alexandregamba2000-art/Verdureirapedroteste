@@ -306,8 +306,6 @@ var SUPABASE_URL = 'https://wjjgtchidxofilaubtda.supabase.co';
 var SUPABASE_KEY = 'sb_publishable__HP5dG-8p-whm46iOO194A_reJq3KS3';
 var SITE_VERSION='202604171534';
 (function(){var sv=localStorage.getItem('vp_site_ver');if(sv!==SITE_VERSION){localStorage.removeItem('vp4_products');localStorage.removeItem('vp3_products');localStorage.setItem('vp_site_ver',SITE_VERSION);}})();
-var SUPABASE_URL = 'https://wjjgtchidxofilaubtda.supabase.co';
-var SUPABASE_KEY = 'sb_publishable__HP5dG-8p-whm46iOO194A_reJq3KS3';
 var CLOUDINARY_CLOUD = 'dk8gtnsvt';
 var CLOUDINARY_PRESET = 'verdureira_upload';
 var _AK = [86,101,114,100,117,114,101,105,114,97,51,54,57,51,54,57];
@@ -324,6 +322,29 @@ function getProducts() {
 try { var s = localStorage.getItem('vp4_products'); return s ? JSON.parse(s) : DEFAULT_PRODUCTS; }
 catch(e) { return DEFAULT_PRODUCTS; }
 }
+var products = getProducts();
+var cart = [];
+try { cart = JSON.parse(localStorage.getItem('vp4_cart') || '[]'); } catch(e) {}
+var currentCat = 'all';
+var selectedGrams = {};
+var searchTerm = '';
+var _imgData = '';
+var _saleType = 'kg';
+var _editId = null;
+var selectedBuyMode = 'kg';
+var _cropImg = null;
+var _cropX = 0;
+var _cropY = 0;
+var _cropSize = 0;
+var _cropDrag = false;
+var _cdsx = 0;
+var _cdsy = 0;
+var _cdcx = 0;
+var _cdcy = 0;
+var _cropCb = null;
+var _tt = null;
+var _lazyObs = null;
+var _sTimer = null;
 
 function saveProductsLocal(p) {
 localStorage.setItem('vp4_products', JSON.stringify(p));
@@ -1311,3 +1332,5 @@ loadFromCloud(function(cp) {
 })();
 
 </script>
+</body>
+</html>
