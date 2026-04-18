@@ -506,15 +506,17 @@ return '<div class="price-block"><div class="gram-selector">' + gb + '</div><div
 }
 
 if (p.saleType === 'kg' && p.pricePerUnit) {
-var mode = selectedBuyMode[p.id] || 'kg';
+var mode = selectedBuyMode[p.id] || '';
 var dK = '';
 if (disc) dK = '<span class="price-old" style="font-size:10px">R$ ' + p.priceOld.toFixed(2) + '</span> <span class="price-discount">-' + disc + '%</span> ';
 var wL = p.avgWeight ? ' (~' + p.avgWeight + 'g)' : '';
-var kgCls = mode === 'kg' ? ' active' : '';
-var unCls = mode === 'un' ? ' active' : '';
-return '<div class="price-block"><div class="buy-mode-hint">👆 Selecione como comprar:</div><div class="buy-mode-row">'
-+ '<button class="buy-mode-btn' + kgCls + '" onclick="setBuyMode(' + p.id + ',\'kg\',event)"><div class="buy-mode-price">' + dK + 'R$ ' + p.price.toFixed(2) + '</div><div class="buy-mode-label">por kg</div></button>'
-+ '<button class="buy-mode-btn' + unCls + '" onclick="setBuyMode(' + p.id + ',\'un\',event)"><div class="buy-mode-price">R$ ' + p.pricePerUnit.toFixed(2) + '</div><div class="buy-mode-label">por unidade' + wL + '</div></button>'
+var ON  = 'cursor:pointer;flex:1;border:2px solid #1b5e20;border-radius:10px;padding:8px 4px;text-align:center;background:#1b5e20;color:#fff;transition:.15s';
+var OFF = 'cursor:pointer;flex:1;border:2px solid #ddd;border-radius:10px;padding:8px 4px;text-align:center;background:#fff;color:#333;transition:.15s';
+var kgSt = mode === 'kg' ? ON : OFF;
+var unSt = mode === 'un' ? ON : OFF;
+return '<div class="price-block"><div style="font-size:11px;color:#555;font-weight:800;margin-bottom:6px;text-align:center">Selecione como comprar:</div><div style="display:flex;gap:8px;margin-bottom:8px">'
++ '<button id="bm-kg-' + p.id + '" style="' + kgSt + '" onclick="setBuyMode(' + p.id + ',\'kg\',event)"><div style="font-size:15px;font-weight:900">' + dK + 'R$ ' + p.price.toFixed(2) + '</div><div style="font-size:10px;margin-top:3px">por kg</div></button>'
++ '<button id="bm-un-' + p.id + '" style="' + unSt + '" onclick="setBuyMode(' + p.id + ',\'un\',event)"><div style="font-size:15px;font-weight:900">R$ ' + p.pricePerUnit.toFixed(2) + '</div><div style="font-size:10px;margin-top:3px">por unidade' + wL + '</div></button>'
 + '</div></div>';
 }
 
@@ -531,23 +533,14 @@ function selectGram(pid, grams, e) { if (e) e.stopPropagation(); selectedGrams[p
 function setBuyMode(pid, mode, e) {
   if (e) { e.stopPropagation(); e.preventDefault(); }
   selectedBuyMode[pid] = mode;
+  var ON  = 'cursor:pointer;flex:1;border:2px solid #1b5e20;border-radius:10px;padding:8px 4px;text-align:center;background:#1b5e20;color:#fff;transition:.15s';
+  var OFF = 'cursor:pointer;flex:1;border:2px solid #ddd;border-radius:10px;padding:8px 4px;text-align:center;background:#fff;color:#333;transition:.15s';
   var kgBtn = document.getElementById('bm-kg-' + pid);
   var unBtn = document.getElementById('bm-un-' + pid);
-  if (kgBtn && unBtn) {
-    var sel = 'background:var(--green-d);border-color:var(--green-d);color:#fff';
-    var unsel = 'background:#fff;border-color:#ddd;color:#333';
-    if (mode === 'kg') {
-      kgBtn.setAttribute('style', sel);
-      unBtn.setAttribute('style', unsel);
-    } else {
-      unBtn.setAttribute('style', sel);
-      kgBtn.setAttribute('style', unsel);
-    }
-  }
+  if (kgBtn) kgBtn.setAttribute('style', mode === 'kg' ? ON : OFF);
+  if (unBtn) unBtn.setAttribute('style', mode === 'un' ? ON : OFF);
   var addBtn = document.getElementById('add-btn-' + pid);
-  if (addBtn) {
-    addBtn.textContent = mode === 'un' ? '+ Adicionar (unidade)' : '+ Adicionar (kg)';
-  }
+  if (addBtn) addBtn.textContent = mode === 'un' ? '+ Adicionar (unidade)' : '+ Adicionar (kg)';
 }
 
 function lazyLoad() {
