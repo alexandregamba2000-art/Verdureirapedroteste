@@ -306,8 +306,13 @@ ontouchstart="cropMouseDown(event)" ontouchmove="cropMouseMove(event)" ontouchen
 </div>
 <div style="display:flex;gap:8px;margin-top:12px">
 <button onclick="cropCancel()" style="flex:1;padding:13px;border:1.5px solid #e0e0e0;border-radius:10px;background:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">Cancelar</button>
-<button onclick="cropConfirm()" style="flex:2;padding:13px;border:none;border-radius:10px;background:var(--green);color
+<button onclick="cropConfirm()" style="flex:2;padding:13px;border:none;border-radius:10px;background:var(--green);color#fff;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit">Usar esta imagem</button>
+</div>
+</div>
+</div>
+</div>
 
+<script>
 var _$ = function(id) { return document.getElementById(id); };
 var WA_NUMBER = '5548984337722';
 var SUPABASE_URL = 'https://cwvyfxukayesyimvtiiy.supabase.co';
@@ -1356,37 +1361,28 @@ if (_sTaps === 3) showToast('Mais 2 toques...');
 }
 
 (function() {
-try {
-var oldKeys = ['vp3_products','vp3_cart','vp_products','vp_cart','vp_products_v2','vp_cart_v2'];
-for (var i = 0; i < oldKeys.length; i++) { try { localStorage.removeItem(oldKeys[i]); } catch(e2) {} }
-} catch(e) {}
+// Sempre começa com DEFAULT_PRODUCTS para não ficar tela vazia
+products = DEFAULT_PRODUCTS;
 currentCat = 'all';
 renderProducts();
 updateBadge();
 updateCartBar();
+// Tentar carregar do Supabase
 loadFromCloud(function(cp) {
   if (cp && cp.length > 0) {
     products = cp;
     try { localStorage.setItem('vp4_products', JSON.stringify(cp)); } catch(e3) {}
     renderProducts(); updateBadge(); updateCartBar();
   } else {
+    // Supabase falhou ou vazio — usar DEFAULT e tentar popular
+    products = DEFAULT_PRODUCTS;
+    renderProducts();
     saveProductsCloud(DEFAULT_PRODUCTS, function(ok) {
-      products = DEFAULT_PRODUCTS;
-      saveProductsLocal(DEFAULT_PRODUCTS);
-      renderProducts(); updateBadge(); updateCartBar();
+      if (ok) showToast('Produtos carregados!');
     });
   }
 });
 })();
-
-UCTS;
-      saveProductsLocal(DEFAULT_PRODUCTS);
-      renderProducts(); updateBadge(); updateCartBar();
-    });
-  }
-});
-})();
-
 </script>
 </body>
 </html>
