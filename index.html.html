@@ -529,20 +529,22 @@ return '<div class="price-block">' + dH2 + '<span class="price-main">R$ ' + p.pr
 
 function selectGram(pid, grams, e) { if (e) e.stopPropagation(); selectedGrams[pid] = grams; renderProducts(); }
 function setBuyMode(pid, mode, e) {
-  if (e) e.stopPropagation();
+  if (e) { e.stopPropagation(); e.preventDefault(); }
   selectedBuyMode[pid] = mode;
-  // Só atualiza os botões deste produto sem re-renderizar tudo
-  var btns = document.querySelectorAll('.buy-mode-btn[data-pid="' + pid + '"]');
-  for (var i = 0; i < btns.length; i++) {
-    var btn = btns[i];
-    if (btn.getAttribute('data-mode') === mode) {
-      btn.classList.add('active');
+  var kgBtn = document.getElementById('bm-kg-' + pid);
+  var unBtn = document.getElementById('bm-un-' + pid);
+  if (kgBtn && unBtn) {
+    var sel = 'background:var(--green-d);border-color:var(--green-d);color:#fff';
+    var unsel = 'background:#fff;border-color:#ddd;color:#333';
+    if (mode === 'kg') {
+      kgBtn.setAttribute('style', sel);
+      unBtn.setAttribute('style', unsel);
     } else {
-      btn.classList.remove('active');
+      unBtn.setAttribute('style', sel);
+      kgBtn.setAttribute('style', unsel);
     }
   }
-  // Atualizar o botão Adicionar para mostrar modo selecionado
-  var addBtn = document.querySelector('.card-add[data-pid="' + pid + '"]');
+  var addBtn = document.getElementById('add-btn-' + pid);
   if (addBtn) {
     addBtn.textContent = mode === 'un' ? '+ Adicionar (unidade)' : '+ Adicionar (kg)';
   }
