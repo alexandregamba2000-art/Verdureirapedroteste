@@ -1511,9 +1511,17 @@ products = np; saveProducts(products); renderAdminProducts(); renderAdminStats()
 function closeAll() { var cp = _$('cart-panel'); if (cp) cp.classList.remove('open'); var co = _$('checkout-panel'); if (co) co.classList.remove('open'); var ov = _$('overlay'); if (ov) ov.classList.remove('open'); }
 function showMain() {
   closeAll();
-  var pp = document.getElementById('profile-page'); if (pp) pp.style.display = 'none';
+  // Esconder tela de perfil
+  var pp = document.getElementById('profile-page');
+  if (pp) pp.style.display = 'none';
+  // Garantir que main-content aparece
+  var mc = document.getElementById('main-content');
+  if (mc) mc.style.display = 'block';
+  // Atualizar nav
   document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
   var nh = document.getElementById('nav-home'); if (nh) nh.classList.add('active');
+  // Re-renderizar produtos
+  renderProducts(); updateBadge(); updateCartBar();
 }
 function scrollToProdutos() { var el = _$('produtos-topo'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
 
@@ -1603,8 +1611,10 @@ function doLogin() {
       currentUser = { id: data.user.id, email: data.user.email, token: data.access_token };
       try { localStorage.setItem('vp4_user', JSON.stringify(currentUser)); } catch(e) {}
       loadProfile(currentUser.id, function() {
-        showToast('✅ Bem-vindo!');
-        showUserProfile();
+        var nome = currentProfile && currentProfile.name ? currentProfile.name.split(' ')[0] : '';
+        showToast('👋 Olá' + (nome ? ', ' + nome : '') + '! Boas compras!');
+        // Ir para tela principal
+        setTimeout(function() { showMain(); }, 800);
       });
     } else {
       showToast('❌ Email ou senha incorretos');
@@ -1641,8 +1651,9 @@ function doRegister() {
         body: JSON.stringify({ id: uid, name: name, phone: phone, address: address, neighborhood: neighborhood, points: 0 })
       }).then(function() {
         currentProfile = { name: name, phone: phone, address: address, neighborhood: neighborhood, points: 0 };
-        showToast('✅ Conta criada! Bem-vindo, ' + name + '!');
-        showUserProfile();
+        showToast('🎉 Bem-vindo, ' + name + '! Agora é só escolher seus produtos!');
+        // Ir para tela principal para estimular compra
+        setTimeout(function() { showMain(); }, 800);
       });
     } else {
       showToast('❌ ' + (data.msg || data.message || 'Erro ao criar conta'));
