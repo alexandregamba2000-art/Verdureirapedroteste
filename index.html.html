@@ -152,6 +152,19 @@ Nossos produtos
 <div class="panel" id="checkout-panel">
 <div class="panel-handle"></div>
 <p class="panel-title">📋 Finalizar Pedido</p>
+
+<!-- Dados do usuário logado -->
+<div id="checkout-user-card" style="display:none;background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px;margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:13px;font-weight:900;color:#166534">✅ Entregando para:</span>
+    <span onclick="showCheckoutEditFields()" style="font-size:12px;color:var(--green);font-weight:800;cursor:pointer">Alterar</span>
+  </div>
+  <div id="checkout-user-name" style="font-size:15px;font-weight:900;color:#1a1a1a"></div>
+  <div id="checkout-user-addr" style="font-size:13px;color:#444;margin-top:3px"></div>
+</div>
+
+<!-- Campos manuais (para não logados ou edição) -->
+<div id="checkout-manual-fields">
 <div class="form-group">
 <label class="form-label">Seu nome *</label>
 <input class="form-input" id="cl-name" placeholder="Ex: Maria Silva" type="text" autocomplete="name">
@@ -159,6 +172,7 @@ Nossos produtos
 <div class="form-group">
 <label class="form-label">Endereço completo *</label>
 <input class="form-input" id="cl-addr" placeholder="Rua, número, bairro" type="text" autocomplete="street-address">
+</div>
 </div>
 <div class="form-group">
 <label class="form-label">Forma de pagamento *</label>
@@ -821,14 +835,31 @@ selectedTime = ''; renderTimeSlots();
 usePoints = false;
 // Preencher dados se logado
 if (currentUser && currentProfile) {
-  var nameEl = _$('cl-name'); if (nameEl && !nameEl.value) nameEl.value = currentProfile.name || '';
-  var addrEl = _$('cl-addr'); if (addrEl && !addrEl.value) {
-    var fullAddr = (currentProfile.address || '') + (currentProfile.neighborhood ? ', ' + currentProfile.neighborhood : '');
-    addrEl.value = fullAddr;
+  // Mostrar card com dados do usuário
+  var card = _$('checkout-user-card');
+  var manual = _$('checkout-manual-fields');
+  var fullAddr = (currentProfile.address || '') + (currentProfile.neighborhood ? ', ' + currentProfile.neighborhood : '');
+  if (card) {
+    card.style.display = 'block';
+    var un = _$('checkout-user-name'); if (un) un.textContent = currentProfile.name || '';
+    var ua = _$('checkout-user-addr'); if (ua) ua.textContent = fullAddr || 'Endereço não cadastrado';
   }
+  if (manual) manual.style.display = 'none';
+  // Preencher campos ocultos para o sendWhatsApp funcionar
+  var nameEl = _$('cl-name'); if (nameEl) nameEl.value = currentProfile.name || '';
+  var addrEl = _$('cl-addr'); if (addrEl) addrEl.value = fullAddr;
+} else {
+  var card2 = _$('checkout-user-card'); if (card2) card2.style.display = 'none';
+  var manual2 = _$('checkout-manual-fields'); if (manual2) manual2.style.display = 'block';
 }
 // Mostrar ou esconder bloco de pontos
 renderPointsBlock();
+}
+
+
+function showCheckoutEditFields() {
+  var card = _$('checkout-user-card'); if (card) card.style.display = 'none';
+  var manual = _$('checkout-manual-fields'); if (manual) manual.style.display = 'block';
 }
 
 function renderPointsBlock() {
@@ -887,6 +918,25 @@ closeAll();
 var co = _$('checkout-panel'); if (co) co.classList.add('open');
 var ov = _$('overlay'); if (ov) ov.classList.add('open');
 selectedTime = ''; renderTimeSlots();
+usePoints = false;
+// Preencher dados se logado
+if (currentUser && currentProfile) {
+  var card = _$('checkout-user-card');
+  var manual = _$('checkout-manual-fields');
+  var fullAddr = (currentProfile.address || '') + (currentProfile.neighborhood ? ', ' + currentProfile.neighborhood : '');
+  if (card) {
+    card.style.display = 'block';
+    var un = _$('checkout-user-name'); if (un) un.textContent = currentProfile.name || '';
+    var ua = _$('checkout-user-addr'); if (ua) ua.textContent = fullAddr || 'Endereço não cadastrado';
+  }
+  if (manual) manual.style.display = 'none';
+  var nameEl = _$('cl-name'); if (nameEl) nameEl.value = currentProfile.name || '';
+  var addrEl = _$('cl-addr'); if (addrEl) addrEl.value = fullAddr;
+} else {
+  var card2 = _$('checkout-user-card'); if (card2) card2.style.display = 'none';
+  var manual2 = _$('checkout-manual-fields'); if (manual2) manual2.style.display = 'block';
+}
+renderPointsBlock();
 }
 
 var selectedPay = '';
