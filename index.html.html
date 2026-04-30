@@ -129,13 +129,16 @@ Nossos produtos
 <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </button>
 <nav class="bottom-nav">
-<div class="nav-item active" onclick="showMain()">
+<div class="nav-item active" id="nav-home" onclick="showMain()">
 <span class="nav-icon">🏠</span><span class="nav-label">Início</span>
 </div>
-<div class="nav-item" onclick="openCart()">
+<div class="nav-item" id="nav-cart" onclick="openCart()">
 <span class="nav-icon">🛒</span><span class="nav-label">Carrinho</span>
 </div>
-<div class="nav-item" onclick="openWA()">
+<div class="nav-item" id="nav-profile" onclick="showProfile()">
+<span class="nav-icon">👤</span><span class="nav-label">Perfil</span>
+</div>
+<div class="nav-item" id="nav-contact" onclick="openWA()">
 <span class="nav-icon">💬</span><span class="nav-label">Contato</span>
 </div>
 </nav>
@@ -357,6 +360,9 @@ try { cart = JSON.parse(localStorage.getItem('vp4_cart') || '[]'); } catch(e) {}
 var currentCat = 'all';
 var selectedGrams = {};
 var searchTerm = '';
+var currentUser = null;
+var currentProfile = null;
+var usePoints = false;
 var _imgData = '';
 var _saleType = 'kg';
 var _editId = null;
@@ -505,7 +511,12 @@ gb += '<button class="gram-opt' + gSel + '" onclick="selectGram(' + p.id + ',' +
 return '<div class="price-block"><div class="gram-selector">' + gb + '</div><div>' + dH + '<span class="price-main">R$ ' + total.toFixed(2) + '</span></div><div class="price-sub">R$ ' + p.price.toFixed(2) + '/100g</div></div>';
 }
 
-if (p.saleType === 'kg' && p.pricePerUnit) {
+// Calcular pricePerUnit automaticamente se tiver avgWeight
+var effectivePPU = p.pricePerUnit;
+if (!effectivePPU && p.saleType === 'kg' && p.avgWeight && p.avgWeight > 0) {
+  effectivePPU = parseFloat(((p.price / 1000) * p.avgWeight).toFixed(2));
+}
+if (p.saleType === 'kg' && effectivePPU) {
 var mode = selectedBuyMode[p.id] || '';
 var dK = '';
 if (disc) dK = '<span class="price-old" style="font-size:10px">R$ ' + p.priceOld.toFixed(2) + '</span> <span class="price-discount">-' + disc + '%</span> ';
@@ -516,7 +527,7 @@ var kgSt = mode === 'kg' ? ON : OFF;
 var unSt = mode === 'un' ? ON : OFF;
 return '<div class="price-block"><div style="font-size:11px;color:#555;font-weight:800;margin-bottom:6px;text-align:center">Selecione como comprar:</div><div style="display:flex;gap:8px;margin-bottom:8px">'
 + '<button id="bm-kg-' + p.id + '" style="' + kgSt + '" onclick="setBuyMode(' + p.id + ',\'kg\',event)"><div style="font-size:15px;font-weight:900">' + dK + 'R$ ' + p.price.toFixed(2) + '</div><div style="font-size:10px;margin-top:3px">por kg</div></button>'
-+ '<button id="bm-un-' + p.id + '" style="' + unSt + '" onclick="setBuyMode(' + p.id + ',\'un\',event)"><div style="font-size:15px;font-weight:900">R$ ' + p.pricePerUnit.toFixed(2) + '</div><div style="font-size:10px;margin-top:3px">por unidade' + wL + '</div></button>'
++ '<button id="bm-un-' + p.id + '" style="' + unSt + '" onclick="setBuyMode(' + p.id + ',\'un\',event)"><div style="font-size:15px;font-weight:900">R$ ' + effectivePPU.toFixed(2) + '</div><div style="font-size:10px;margin-top:3px">por unidade' + wL + '</div></button>'
 + '</div></div>';
 }
 
@@ -632,6 +643,8 @@ return;
 var html = '';
 for (var j = 0; j < filtered.length; j++) {
 var p2 = filtered[j];
+var cartQty = 0;
+for (var cj = 0; cj < cart.length; cj++) { if (cart[cj].id === p2.id) cartQty += cart[cj].qty; }
 var d = discountPct(p2);
 var imgH2 = p2.img ? '<img class="card-img" data-src="' + p2.img + '" src="" alt="' + p2.name + '">' : '<div class="card-ph">' + p2.emoji + '</div>';
 var badges = (p2.hot ? '<span class="badge-hot">Oferta</span>' : '') + (p2.star ? '<span class="badge-star">Top</span>' : '') + (d ? '<span class="badge-promo">-' + d + '%</span>' : '');
@@ -680,8 +693,9 @@ if (!p) return;
 var grams = p.saleType === 'gramas' ? (selectedGrams[p.id] || getGramOpts(p)[0]) : null;
 var dualMode = (p.saleType === 'kg' && p.pricePerUnit) ? (selectedBuyMode[p.id] || 'kg') : null;
 var unitPrice, cartST, cartAW, key, suffix;
+var effPPU = p.pricePerUnit || (p.avgWeight ? parseFloat(((p.price/1000)*p.avgWeight).toFixed(2)) : null);
 if (dualMode === 'un') {
-unitPrice = p.pricePerUnit; cartST = 'un'; cartAW = p.avgWeight || null;
+unitPrice = effPPU; cartST = 'un'; cartAW = p.avgWeight || null;
 key = id + '_un'; suffix = ' (unidade)';
 } else {
 unitPrice = calcPrice(p, grams); cartST = p.saleType; cartAW = p.avgWeight || null;
@@ -694,10 +708,35 @@ if (found) { found.qty++; }
 else { cart.push({ key: key, id: p.id, name: p.name, price: unitPrice, unitPrice: p.price, saleType: cartST, avgWeight: cartAW, emoji: p.emoji, img: p.img, grams: grams, qty: 1 }); }
 saveCart(); updateBadge(); updateCartBar();
 showToast(p.emoji + ' ' + p.name + suffix + ' adicionado!');
+// Atualizar visual do card adicionado
+updateCartIndicators();
 }
 
 function saveCart() { localStorage.setItem('vp4_cart', JSON.stringify(cart)); }
-function updateBadge() { var t = 0; for (var i = 0; i < cart.length; i++) t += cart[i].qty; var el = _$('cart-count'); if (el) el.textContent = t; }
+
+function updateCartIndicators() {
+  // Atualizar contador de cada produto nos cards
+  for (var i = 0; i < products.length; i++) {
+    var p = products[i];
+    var qty = 0;
+    // Somar todas as qtds deste produto no carrinho
+    for (var j = 0; j < cart.length; j++) {
+      if (cart[j].id === p.id) qty += cart[j].qty;
+    }
+    // Atualizar badge do card se existir
+    var badge = document.getElementById('card-qty-' + p.id);
+    if (badge) {
+      if (qty > 0) {
+        badge.textContent = qty + ' no carrinho';
+        badge.style.display = 'block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  }
+}
+
+function updateBadge() { var t = 0; for (var i = 0; i < cart.length; i++) t += cart[i].qty; var el = _$('cart-count'); if (el) { el.textContent = t; el.style.display = t > 0 ? 'flex' : 'none'; } }
 function openCart() { renderCart(); var cp = _$('cart-panel'); if (cp) cp.classList.add('open'); var ov = _$('overlay'); if (ov) ov.classList.add('open'); }
 
 function renderCart() {
@@ -745,6 +784,8 @@ break;
 }
 }
 saveCart(); updateBadge(); updateCartBar(); renderCart();
+// Atualizar visual dos cards na página principal
+updateCartIndicators();
 }
 
 var TIME_SLOTS = [
@@ -777,6 +818,68 @@ function openCheckout() {
 var cp = _$('cart-panel'); if (cp) cp.classList.remove('open');
 var co = _$('checkout-panel'); if (co) co.classList.add('open');
 selectedTime = ''; renderTimeSlots();
+usePoints = false;
+// Preencher dados se logado
+if (currentUser && currentProfile) {
+  var nameEl = _$('cl-name'); if (nameEl && !nameEl.value) nameEl.value = currentProfile.name || '';
+  var addrEl = _$('cl-addr'); if (addrEl && !addrEl.value) {
+    var fullAddr = (currentProfile.address || '') + (currentProfile.neighborhood ? ', ' + currentProfile.neighborhood : '');
+    addrEl.value = fullAddr;
+  }
+}
+// Mostrar ou esconder bloco de pontos
+renderPointsBlock();
+}
+
+function renderPointsBlock() {
+var block = _$('points-checkout-block');
+if (!block) return;
+if (currentUser && currentProfile && currentProfile.points >= 100) {
+  var pts = currentProfile.points;
+  var desconto = Math.floor(pts / 100) * 5;
+  block.style.display = 'block';
+  var msg = _$('points-checkout-msg');
+  if (msg) msg.textContent = 'Você tem ' + pts + ' pontos = R$' + desconto.toFixed(2) + ' de desconto';
+  updatePointsToggle();
+} else if (currentUser && currentProfile) {
+  block.style.display = 'block';
+  var msg2 = _$('points-checkout-msg');
+  var falta = currentProfile.points ? (100 - (currentProfile.points % 100)) : 100;
+  if (msg2) msg2.textContent = 'Você tem ' + (currentProfile.points||0) + ' pontos. Faltam ' + falta + ' para R$5 de desconto.';
+  var btn = _$('points-use-btn'); if (btn) btn.style.display = 'none';
+} else {
+  block.style.display = 'none';
+}
+}
+
+function togglePoints() {
+if (!currentProfile || currentProfile.points < 100) return;
+usePoints = !usePoints;
+updatePointsToggle();
+}
+
+function updatePointsToggle() {
+var btn = _$('points-use-btn');
+var total = 0;
+for (var i = 0; i < cart.length; i++) total += cart[i].price * cart[i].qty;
+var desconto = Math.floor((currentProfile.points||0) / 100) * 5;
+if (btn) {
+  if (usePoints) {
+    btn.textContent = '✅ Usando R$' + desconto.toFixed(2) + ' de desconto';
+    btn.style.background = 'var(--green)';
+    btn.style.color = '#fff';
+  } else {
+    btn.textContent = '🎁 Usar R$' + desconto.toFixed(2) + ' de desconto';
+    btn.style.background = 'var(--green-pale)';
+    btn.style.color = 'var(--green-d)';
+  }
+}
+// Atualizar total no checkout
+var totalEl = _$('checkout-total');
+if (totalEl) {
+  var finalTotal = usePoints ? Math.max(0, total - desconto) : total;
+  totalEl.textContent = 'Total: R$ ' + finalTotal.toFixed(2) + (usePoints ? ' (-R$' + desconto.toFixed(2) + ')' : '');
+}
 }
 function backToCart() { var co = _$('checkout-panel'); if (co) co.classList.remove('open'); openCart(); }
 function openCheckoutDirect() {
@@ -807,6 +910,11 @@ if (!selectedTime) { alert('Escolha o horario de entrega.'); return; }
 if (!cart.length) { alert('Carrinho vazio.'); return; }
 var total = 0;
 for (var i = 0; i < cart.length; i++) total += cart[i].price * cart[i].qty;
+var descUsado = 0;
+if (usePoints && currentProfile && currentProfile.points >= 100) {
+  descUsado = Math.floor(currentProfile.points / 100) * 5;
+  total = Math.max(0, total - descUsado);
+}
 var payL = { pix: 'Pix', dinheiro: 'Dinheiro', cartao: 'Cartao' };
 var tLabel = '';
 for (var j = 0; j < TIME_SLOTS.length; j++) { if (TIME_SLOTS[j].id === selectedTime) { tLabel = TIME_SLOTS[j].label; break; } }
@@ -825,11 +933,30 @@ msg += '\n\nCliente: ' + name;
 msg += '\nEndereco: ' + addr;
 msg += '\nEntrega: ' + tLabel;
 msg += '\n\nItens:\n' + lines.join('\n');
+if (descUsado > 0) msg += '\n🎁 Desconto pontos: -R$ ' + descUsado.toFixed(2);
 msg += '\n\nTotal: R$ ' + total.toFixed(2);
 msg += '\nPagamento: ' + (payL[selectedPay] || selectedPay);
 if (obs) msg += '\n\nObs: ' + obs;
 msg += '\n\nPedido enviado pelo site';
-cart = []; saveCart(); updateBadge(); updateCartBar();
+// Acumular pontos (1 ponto por R$1)
+if (currentUser && currentProfile) {
+  var pontosGanhos = Math.floor(total);
+  var pontosAtuais = currentProfile.points || 0;
+  if (usePoints && descUsado > 0) {
+    // Subtrair pontos usados
+    pontosAtuais = pontosAtuais - (Math.floor(descUsado / 5) * 100);
+  }
+  var novosPontos = Math.min(500, pontosAtuais + pontosGanhos);
+  currentProfile.points = novosPontos;
+  // Salvar no Supabase
+  fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + currentUser.id, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ points: novosPontos })
+  });
+  showToast('🌟 +' + pontosGanhos + ' pontos ganhos!');
+}
+cart = []; saveCart(); updateBadge(); updateCartBar(); usePoints = false;
 if (_$('cl-name')) _$('cl-name').value = '';
 if (_$('cl-addr')) _$('cl-addr').value = '';
 if (_$('cl-obs'))  _$('cl-obs').value  = '';
@@ -847,7 +974,15 @@ function openWA() { window.open('https://api.whatsapp.com/send?phone=' + WA_NUMB
 function updateCartBar() {
 var bar = _$('cart-bar'), total = 0, qty = 0;
 for (var i = 0; i < cart.length; i++) { total += cart[i].price * cart[i].qty; qty += cart[i].qty; }
-if (!qty) { if (bar) bar.style.transform = 'translateX(-50%) translateY(120%)'; return; }
+if (!qty) {
+  if (bar) {
+    bar.style.transform = 'translateX(-50%) translateY(120%)';
+    setTimeout(function() { if (bar) bar.style.display = 'none'; }, 320);
+  }
+  // Atualizar badge para 0
+  var el = _$('cart-count'); if (el) el.textContent = '0';
+  return;
+}
 if (!bar) {
 bar = document.createElement('div'); bar.id = 'cart-bar';
 bar.style.cssText = 'position:fixed;bottom:66px;left:50%;transform:translateX(-50%) translateY(120%);width:calc(100% - 32px);max-width:448px;background:var(--green);color:#fff;border-radius:16px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;z-index:180;box-shadow:0 6px 24px rgba(0,0,0,.28);transition:transform .3s ease';
@@ -860,7 +995,7 @@ info.appendChild(lbl); info.appendChild(tot); left.appendChild(bdg); left.append
 var btn = document.createElement('button'); btn.style.cssText = 'background:var(--yellow);color:#222;border:none;padding:10px 18px;border-radius:50px;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit'; btn.textContent = 'Finalizar'; btn.onclick = function() { openCheckoutDirect(); };
 bar.appendChild(left); bar.appendChild(btn); document.body.appendChild(bar);
 setTimeout(function() { bar.style.transform = 'translateX(-50%) translateY(0)'; }, 50);
-} else { bar.style.transform = 'translateX(-50%) translateY(0)'; }
+} else { bar.style.display = 'flex'; bar.style.transform = 'translateX(-50%) translateY(0)'; }
 var bq = _$('bar-qty'); if (bq) bq.textContent = qty;
 var bt = _$('bar-total'); if (bt) bt.textContent = 'R$ ' + total.toFixed(2);
 }
@@ -971,9 +1106,10 @@ h += '<button class="sale-type-btn' + (_saleType === 'kg' ? ' active' : '') + '"
 h += '<button class="sale-type-btn' + (_saleType === 'un' ? ' active' : '') + '" onclick="setSaleType(\'un\',this)">Unidade</button>';
 h += '<button class="sale-type-btn' + (_saleType === 'bj' ? ' active' : '') + '" onclick="setSaleType(\'bj\',this)">Bandeja</button>';
 h += '<button class="sale-type-btn' + (_saleType === 'gramas' ? ' active' : '') + '" onclick="setSaleType(\'gramas\',this)">Gramas</button></div>';
-h += '<div id="af-kg-fields"' + (_saleType !== 'kg' ? ' style="display:none"' : '') + '>';
-h += '<div class="af-row"><input class="af-input" id="af-price-kg" placeholder="Preco por kg *" type="number" step="0.01" min="0" value="' + (p && p.saleType === 'kg' ? p.price : '') + '">';
-h += '<input class="af-input" id="af-price-per-unit" placeholder="Preco/un (opc)" type="number" step="0.01" min="0" value="' + (p && p.pricePerUnit ? p.pricePerUnit : '') + '"></div>';
+h += '<div class="af-row"><input class="af-input" id="af-price-kg" placeholder="Preco por kg *" type="number" step="0.01" min="0" value="\' + (p && p.saleType === \'kg\' ? p.price : \'\') + \'" oninput="calcAutoUnitPrice()">\';'
+h += '<input class="af-input" id="af-price-per-unit" placeholder="Preco/un (calculado auto)" type="number" step="0.01" min="0" value="\' + (p && p.pricePerUnit ? p.pricePerUnit : \'\') + \'" oninput="updateUnitPricePreview()"></div>\';'
+h += '<input class="af-input" id="af-avgweight-kg" placeholder="Peso medio/unidade (g) — Ex: 150" type="number" min="0" value="\' + (p && p.saleType === \'kg\' && p.avgWeight ? p.avgWeight : \'\') + \'" oninput="calcAutoUnitPrice()"></div>\';'
+h += '<div id="af-unit-price-preview" style="font-size:12px;color:#1b5e20;font-weight:800;padding:4px 8px;background:#f0fdf4;border-radius:6px;margin-bottom:6px;display:none"></div>\';'
 h += '<input class="af-input" id="af-avgweight-kg" placeholder="Peso medio unidade (g)" type="number" min="0" value="' + (p && p.saleType === 'kg' && p.avgWeight ? p.avgWeight : '') + '"></div>';
 h += '<div id="af-un-fields"' + (_saleType !== 'un' ? ' style="display:none"' : '') + '>';
 h += '<div class="af-row"><input class="af-input" id="af-price-un" placeholder="Preco/un *" type="number" step="0.01" min="0" value="' + (p && p.saleType === 'un' ? p.price : '') + '">';
@@ -1321,6 +1457,42 @@ function uploadToCloudinary(dataUrl, cb) {
   });
 }
 
+
+function calcAutoUnitPrice() {
+  var priceKgEl = document.getElementById('af-price-kg');
+  var avgWEl = document.getElementById('af-avgweight-kg');
+  var ppuEl = document.getElementById('af-price-per-unit');
+  var preview = document.getElementById('af-unit-price-preview');
+  if (!priceKgEl || !avgWEl || !ppuEl) return;
+  var priceKg = parseFloat(priceKgEl.value) || 0;
+  var avgG = parseInt(avgWEl.value) || 0;
+  if (priceKg > 0 && avgG > 0) {
+    var unitPrice = (priceKg / 1000) * avgG;
+    ppuEl.value = unitPrice.toFixed(2);
+    if (preview) {
+      preview.style.display = 'block';
+      preview.textContent = '✅ Preço/unidade calculado: R$ ' + unitPrice.toFixed(2) + ' (~' + avgG + 'g)';
+    }
+  } else {
+    if (preview) preview.style.display = 'none';
+  }
+}
+
+function updateUnitPricePreview() {
+  var ppuEl = document.getElementById('af-price-per-unit');
+  var avgWEl = document.getElementById('af-avgweight-kg');
+  var preview = document.getElementById('af-unit-price-preview');
+  if (!ppuEl || !preview) return;
+  var ppu = parseFloat(ppuEl.value) || 0;
+  var avgG = parseInt(avgWEl ? avgWEl.value : 0) || 0;
+  if (ppu > 0) {
+    preview.style.display = 'block';
+    preview.textContent = '✅ Preço/unidade: R$ ' + ppu.toFixed(2) + (avgG > 0 ? ' (~' + avgG + 'g)' : '');
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
 function saveEdit(id) {
 var d = getFormVals(); if (!d.name || !d.price || !d.cat) { showToast('Preencha nome, preco e categoria'); return; }
 for (var i = 0; i < products.length; i++) { if (products[i].id === id) { products[i] = { id: id, emoji: d.emoji, name: d.name, price: d.price, priceOld: d.priceOld, pricePerUnit: d.pricePerUnit, saleType: d.saleType, avgWeight: d.avgWeight, gramOptions: d.gramOptions, cat: d.cat, hot: d.hot, star: d.star, img: d.img }; break; } }
@@ -1337,7 +1509,12 @@ products = np; saveProducts(products); renderAdminProducts(); renderAdminStats()
 }
 
 function closeAll() { var cp = _$('cart-panel'); if (cp) cp.classList.remove('open'); var co = _$('checkout-panel'); if (co) co.classList.remove('open'); var ov = _$('overlay'); if (ov) ov.classList.remove('open'); }
-function showMain() { closeAll(); }
+function showMain() {
+  closeAll();
+  var pp = document.getElementById('profile-page'); if (pp) pp.style.display = 'none';
+  document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
+  var nh = document.getElementById('nav-home'); if (nh) nh.classList.add('active');
+}
 function scrollToProdutos() { var el = _$('produtos-topo'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
 
 var _toastEl, _tt;
@@ -1354,6 +1531,164 @@ if (_sTaps >= 5) { _sTaps = 0; showAdmin(); return; }
 _sTimer = setTimeout(function() { _sTaps = 0; }, 2000);
 if (_sTaps === 3) showToast('Mais 2 toques...');
 }
+
+
+// ── AUTH / LOGIN ──
+function showProfile() {
+  document.getElementById('profile-page').style.display = 'block';
+  document.getElementById('main-content') && (document.getElementById('main-content').style.display = 'none');
+  // Atualizar nav
+  document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
+  var np = document.getElementById('nav-profile'); if (np) np.classList.add('active');
+  if (currentUser) {
+    showUserProfile();
+  } else {
+    document.getElementById('login-form').style.display = 'block';
+    document.getElementById('register-form').style.display = 'none';
+    document.getElementById('user-profile').style.display = 'none';
+  }
+}
+
+
+
+function showLogin() {
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('user-profile').style.display = 'none';
+}
+
+function showRegister() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+  document.getElementById('user-profile').style.display = 'none';
+}
+
+function showUserProfile() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('user-profile').style.display = 'block';
+  if (currentProfile) {
+    var el = document.getElementById('profile-name');
+    if (el) el.textContent = currentProfile.name || 'Usuário';
+    var ee = document.getElementById('profile-email');
+    if (ee) ee.textContent = currentUser.email || '';
+    var ea = document.getElementById('profile-address');
+    if (ea) ea.textContent = (currentProfile.address || '-') + (currentProfile.neighborhood ? ', ' + currentProfile.neighborhood : '');
+    var pts = currentProfile.points || 0;
+    var ep = document.getElementById('profile-points');
+    if (ep) ep.textContent = pts;
+    var prog = document.getElementById('points-progress');
+    if (prog) prog.style.width = Math.min((pts % 100), 100) + '%';
+    var msg = document.getElementById('points-msg');
+    if (msg) {
+      var falta = 100 - (pts % 100);
+      if (pts >= 100) msg.textContent = '🎁 Você tem R$' + Math.floor(pts/100)*5 + ' em desconto disponível!';
+      else msg.textContent = 'Faltam ' + falta + ' pontos para R$5 de desconto';
+    }
+  }
+}
+
+function doLogin() {
+  var email = document.getElementById('login-email').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  if (!email || !pass) { showToast('Preencha email e senha'); return; }
+  showToast('Entrando...');
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: pass })
+  }).then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.access_token) {
+      currentUser = { id: data.user.id, email: data.user.email, token: data.access_token };
+      try { localStorage.setItem('vp4_user', JSON.stringify(currentUser)); } catch(e) {}
+      loadProfile(currentUser.id, function() {
+        showToast('✅ Bem-vindo!');
+        showUserProfile();
+      });
+    } else {
+      showToast('❌ Email ou senha incorretos');
+    }
+  }).catch(function() { showToast('❌ Erro de conexão'); });
+}
+
+function doRegister() {
+  var name = document.getElementById('reg-name').value.trim();
+  var phone = document.getElementById('reg-phone').value.trim();
+  var email = document.getElementById('reg-email').value.trim();
+  var pass = document.getElementById('reg-pass').value;
+  var address = document.getElementById('reg-address').value.trim();
+  var neighborhood = document.getElementById('reg-neighborhood').value.trim();
+  if (!name || !email || !pass) { showToast('Preencha nome, email e senha'); return; }
+  if (pass.length < 6) { showToast('Senha precisa ter 6+ caracteres'); return; }
+  showToast('Criando conta...');
+  fetch(SUPABASE_URL + '/auth/v1/signup', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: pass })
+  }).then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.id || (data.user && data.user.id)) {
+      var uid = data.id || data.user.id;
+      var token = data.access_token || (data.session && data.session.access_token) || '';
+      currentUser = { id: uid, email: email, token: token };
+      try { localStorage.setItem('vp4_user', JSON.stringify(currentUser)); } catch(e) {}
+      // Salvar perfil
+      fetch(SUPABASE_URL + '/rest/v1/profiles', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+        body: JSON.stringify({ id: uid, name: name, phone: phone, address: address, neighborhood: neighborhood, points: 0 })
+      }).then(function() {
+        currentProfile = { name: name, phone: phone, address: address, neighborhood: neighborhood, points: 0 };
+        showToast('✅ Conta criada! Bem-vindo, ' + name + '!');
+        showUserProfile();
+      });
+    } else {
+      showToast('❌ ' + (data.msg || data.message || 'Erro ao criar conta'));
+    }
+  }).catch(function() { showToast('❌ Erro de conexão'); });
+}
+
+function loadProfile(uid, cb) {
+  fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + uid + '&select=*', {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  }).then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.length > 0) {
+      currentProfile = data[0];
+    }
+    if (cb) cb();
+  }).catch(function() { if (cb) cb(); });
+}
+
+function doLogout() {
+  currentUser = null;
+  currentProfile = null;
+  try { localStorage.removeItem('vp4_user'); } catch(e) {}
+  showToast('Até logo!');
+  showLogin();
+}
+
+function showEditProfile() {
+  if (!currentProfile) return;
+  document.getElementById('reg-name') && (document.getElementById('reg-name').value = currentProfile.name || '');
+  document.getElementById('reg-phone') && (document.getElementById('reg-phone').value = currentProfile.phone || '');
+  document.getElementById('reg-address') && (document.getElementById('reg-address').value = currentProfile.address || '');
+  document.getElementById('reg-neighborhood') && (document.getElementById('reg-neighborhood').value = currentProfile.neighborhood || '');
+  showRegister();
+}
+
+// Restaurar sessão do localStorage
+(function() {
+  try {
+    var saved = localStorage.getItem('vp4_user');
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      loadProfile(currentUser.id, function() {});
+    }
+  } catch(e) {}
+})();
 
 (function() {
 currentCat = 'all';
@@ -1380,5 +1715,91 @@ loadFromCloud(function(cp) {
 })();
 
 </script>
+
+<!-- TELA DE PERFIL/LOGIN -->
+<div id="profile-page" style="display:none;min-height:100vh;background:#f8faf8;padding-bottom:80px">
+  <div style="background:var(--green);padding:20px 16px 30px;color:#fff">
+    <h2 id="profile-title" style="margin:0;font-size:20px;font-weight:900">Minha Conta</h2>
+    <p id="profile-subtitle" style="margin:4px 0 0;font-size:13px;opacity:.85">Faça login para agilizar seus pedidos</p>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div id="login-form" style="padding:20px 16px">
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+      <h3 style="margin:0 0 16px;font-size:17px;color:#1a1a1a">Entrar na sua conta</h3>
+      <input id="login-email" type="email" placeholder="Seu email" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="login-pass" type="password" placeholder="Sua senha" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:14px;box-sizing:border-box;font-family:inherit">
+      <button onclick="doLogin()" style="width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit">Entrar</button>
+      <div style="text-align:center;margin-top:14px;font-size:14px;color:#666">
+        Não tem conta? <span onclick="showRegister()" style="color:var(--green);font-weight:800;cursor:pointer">Cadastrar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CADASTRO FORM -->
+  <div id="register-form" style="display:none;padding:20px 16px">
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+      <h3 style="margin:0 0 16px;font-size:17px;color:#1a1a1a">Criar conta</h3>
+      <input id="reg-name" type="text" placeholder="Seu nome completo" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="reg-phone" type="tel" placeholder="Seu WhatsApp (ex: 48999999999)" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="reg-email" type="email" placeholder="Seu email" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="reg-pass" type="password" placeholder="Senha (mínimo 6 caracteres)" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="reg-address" type="text" placeholder="Endereço (rua e número)" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:10px;box-sizing:border-box;font-family:inherit">
+      <input id="reg-neighborhood" type="text" placeholder="Bairro" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:14px;box-sizing:border-box;font-family:inherit">
+      <button onclick="doRegister()" style="width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit">Criar conta</button>
+      <div style="text-align:center;margin-top:14px;font-size:14px;color:#666">
+        Já tem conta? <span onclick="showLogin()" style="color:var(--green);font-weight:800;cursor:pointer">Entrar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL LOGADO -->
+  <div id="user-profile" style="display:none;padding:20px 16px">
+    <!-- Card de boas vindas -->
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:24px">👤</div>
+        <div>
+          <div id="profile-name" style="font-size:17px;font-weight:900;color:#1a1a1a">Carregando...</div>
+          <div id="profile-email" style="font-size:13px;color:#666;margin-top:2px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de pontos -->
+    <div style="background:linear-gradient(135deg,var(--green),#2d9e4f);border-radius:16px;padding:20px;color:#fff;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:800;opacity:.85;margin-bottom:6px">🌟 Meus Pontos Fidelidade</div>
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <div id="profile-points" style="font-size:36px;font-weight:900;line-height:1">0</div>
+        <div style="font-size:14px;opacity:.85;padding-bottom:4px">pontos</div>
+      </div>
+      <div id="points-progress-bar" style="background:rgba(255,255,255,.25);border-radius:50px;height:8px;margin:12px 0 8px">
+        <div id="points-progress" style="background:#fff;border-radius:50px;height:8px;width:0%;transition:.5s"></div>
+      </div>
+      <div id="points-msg" style="font-size:12px;opacity:.85">A cada R$1 = 1 ponto • 100 pontos = R$5 de desconto</div>
+    </div>
+
+    <!-- Card de endereço -->
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:14px">
+      <div style="font-size:15px;font-weight:900;margin-bottom:12px;color:#1a1a1a">📍 Endereço de entrega</div>
+      <div id="profile-address" style="font-size:14px;color:#444;line-height:1.6">-</div>
+      <button onclick="showEditProfile()" style="margin-top:12px;padding:10px 16px;background:var(--green-pale);color:var(--green-d);border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">✏️ Editar dados</button>
+    </div>
+
+    <!-- Regras de pontos -->
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:14px">
+      <div style="font-size:15px;font-weight:900;margin-bottom:12px;color:#1a1a1a">🎁 Como funcionam os pontos</div>
+      <div style="font-size:13px;color:#444;line-height:1.8">
+        ⭐ A cada <b>R$1,00</b> gasto = <b>1 ponto</b><br>
+        🎁 <b>100 pontos</b> = <b>R$5,00</b> de desconto<br>
+        📦 Máximo acumulado: <b>500 pontos</b><br>
+        💡 Use no checkout ao finalizar o pedido
+      </div>
+    </div>
+
+    <button onclick="doLogout()" style="width:100%;padding:14px;background:#fff;color:#e53935;border:1.5px solid #e53935;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit">Sair da conta</button>
+  </div>
+</div>
+
 </body>
 </html>
