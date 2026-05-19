@@ -19,23 +19,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<style>header{
-  background:var(--green);
-  color:#fff;
-  padding:10px 16px;
-  position:fixed !important;
-  top:0 !important;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:480px;
-  z-index:9999 !important;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  height:58px;
-  box-shadow:0 2px 12px rgba(0,0,0,.2);
-}
+<style>header{background:var(--green);color:#fff;padding:0 16px;position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:12px;height:64px;box-shadow:0 2px 12px rgba(0,0,0,.2);width:100%}
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Nunito:wght@400;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -66,18 +50,18 @@
 *{-webkit-tap-highlight-color:transparent}
 
 /* FUNDO MADEIRA */
-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 img{max-width:100%;display:block}
 button{cursor:pointer;font-family:inherit;border:none;outline:none;touch-action:manipulation}
 input,select,textarea{font-family:inherit}
 
 /* HEADER — bege claro como na imagem */
 
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
-.logo-icon{width:42px;height:42px;flex-shrink:0}
-.logo-icon img{width:42px;height:42px;border-radius:10px;object-fit:contain}
-.logo-text{display:flex;flex-direction:column}
-.logo-name{font-size:17px;font-weight:900;line-height:1.1}
+.logo{display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer}
+.logo-icon{width:44px;height:44px;flex-shrink:0}
+.logo-icon img{width:44px;height:44px;border-radius:10px;object-fit:contain}
+.logo-text{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.logo-name{font-size:15px;font-weight:900;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .logo-name .do{
   font-size:13px;
   font-weight:700;
@@ -86,7 +70,7 @@ input,select,textarea{font-family:inherit}
   line-height:1.4;
   letter-spacing:1px;
 }
-.logo-sub{font-size:11px;opacity:.85;margin-top:1px}
+.logo-sub{font-size:10px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .header-actions{display:flex;align-items:center;gap:8px}
 .header-icon-btn{
   width:38px;height:38px;
@@ -176,7 +160,7 @@ input,select,textarea{font-family:inherit}
 .destaque-img-wrap{height:120px;background:#fff;display:flex;align-items:center;justify-content:center;padding:8px}
 .destaque-img{width:100%;height:110px;object-fit:contain;background:#fff;padding:4px}
 .destaque-ph{height:110px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:36px}
-.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 
@@ -199,7 +183,7 @@ input,select,textarea{font-family:inherit}
 .badge-top{background:var(--yellow);color:#2a1a08;font-size:9px;font-weight:900;padding:3px 7px;border-radius:50px}
 .badge-promo{background:var(--red);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:50px}
 .card-qty-badge{background:var(--orange);color:#fff;font-size:10px;font-weight:900;text-align:center;padding:3px 8px;border-radius:0 0 14px 14px;margin-top:-2px}
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .card-name{font-size:13px;font-weight:800;color:#1a1a1a;margin-bottom:2px;line-height:1.3}
 .price-block{margin-bottom:8px}
 .price-main{font-size:15px;font-weight:900;color:#1a1a1a}
@@ -269,7 +253,7 @@ input,select,textarea{font-family:inherit}
 .panel-
 .panel-title{font-size:16px;font-weight:900;color:var(--text)}
 .panel-close{font-size:22px;cursor:pointer;color:var(--text2);background:#fff;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.panel-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.panel-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .overlay{position:fixed;inset:0;top:52px;background:rgba(0,0,0,.45);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:auto}
 
@@ -392,7 +376,7 @@ input,select,textarea{font-family:inherit}
 .checkout-user-name{font-size:15px;font-weight:900;color:var(--text)}
 .checkout-user-addr{font-size:13px;color:var(--text2);margin-top:3px}
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .card-bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto}
 
 .card-add{background:var(--green);color:#fff;border:none;border-radius:50px;padding:10px 0;font-size:14px;font-weight:900;cursor:pointer;width:100%;font-family:inherit;transition:.18s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;letter-spacing:.2px}
@@ -431,7 +415,7 @@ input,select,textarea{font-family:inherit}
 .destaque-img-wrap{height:120px;background:#fff;display:flex;align-items:center;justify-content:center;padding:8px}
 .destaque-img{width:100%;height:110px;object-fit:contain;background:#fff;padding:4px}
 .destaque-ph{height:110px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:36px}
-.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 .destaque-badge{position:absolute;top:6px;left:6px;background:var(--orange);color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:50px}
@@ -440,7 +424,7 @@ input,select,textarea{font-family:inherit}
 /* CARD + BOTÃO */
 .card-add{background:var(--green);color:#fff;border:none;border-radius:50px;padding:10px 0;font-size:14px;font-weight:900;cursor:pointer;width:100%;font-family:inherit;transition:.18s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;letter-spacing:.2px}
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .card-price-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto;padding-top:6px}
 
 /* GRID 2 COLUNAS — forçado */
@@ -469,7 +453,7 @@ input,select,textarea{font-family:inherit}
 .admin-
 .admin-header h2{font-size:18px;font-weight:900;color:var(--text)}
 .admin-close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)}
-.admin-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.admin-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .admin-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
 .stat-card{background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .stat-val{font-size:24px;font-weight:900;color:var(--green-d);margin-bottom:4px}
@@ -495,7 +479,7 @@ input,select,textarea{font-family:inherit}
 .admin-edit-btn.acc-open{background:#dcfce7;border-color:#4ade80;color:#166534}
 .acc-form{background:#f8fafb;border:1.5px solid #e8f5e9;border-radius:0 0 14px 14px;animation:accFade .2s ease;overflow:hidden;margin-top:-6px}
 @keyframes accFade{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.acc-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.acc-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .acc-input{padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;width:100%;transition:.2s;box-sizing:border-box}
 .acc-input:focus{border-color:var(--green);box-shadow:0 0 0 2px rgba(45,122,58,.1)}
 .acc-type{padding:7px 12px;border-radius:50px;border:1.5px solid #e0e0e0;background:#fff;font-size:12px;font-weight:800;cursor:pointer;color:#666;font-family:inherit;transition:.2s}
@@ -506,7 +490,7 @@ input,select,textarea{font-family:inherit}
 
 
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:58px}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;margin:0;padding:0}
 .price-unit{font-size:11px;color:#888;font-weight:600}
 .card-add:active{transform:scale(.97);background:var(--green-d)}
 #main-content,.products-section,.main-content{background:#fff !important}
@@ -520,7 +504,13 @@ body>*:not(header){margin-top:0}
 .send-btn:active{transform:scale(.97);background:var(--green-d)}
 .back-cart-btn{background:none;border:none;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin-top:8px;padding:6px}
 .form-section-title{font-size:12px;font-weight:900;color:#555;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px}
-.pay-grid{display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:8px;margin-bottom:12px}</style>
+.pay-grid{display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:8px;margin-bottom:12px}
+header h1{font-size:18px;font-weight:900;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;color:#fff}
+header p{font-size:12px;opacity:.85;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.cart-btn{background:transparent;color:#fff;border:none;padding:6px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.cart-badge{background:var(--yellow);color:#1a1a1a;border-radius:50px;font-size:11px;font-weight:900;padding:1px 6px;min-width:18px;text-align:center}
+.page-wrap{max-width:480px;margin:0 auto;background:#fff;min-height:100vh}
+</style>
 </head>
 <body>
 <header>
@@ -535,6 +525,7 @@ body>*:not(header){margin-top:0}
 🛒 <span class="cart-badge" id="cart-count">0</span>
 </button>
 </header>
+<div class="page-wrap">
 
 <div id="main-content">
 <div class="hero">
@@ -3363,5 +3354,6 @@ loadFromCloud(function(cp) {
 
 
 
+</div>
 </body>
 </html>
