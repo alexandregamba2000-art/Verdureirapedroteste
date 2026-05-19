@@ -126,7 +126,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 .filter-btn .fi{font-size:14px}
 
 /* CONTEÚDO PRINCIPAL */
-.main-content{padding:14px 14px 100px}
+.#main-content{padding:14px 14px 100px;background:#fff}
 
 /* HERO */
 .hero{
@@ -171,18 +171,12 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 /* DESTAQUES */
 .destaques-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
 .destaques-scroll::-webkit-scrollbar{display:none}
-.destaque-card{
-  flex-shrink:0;width:130px;
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 3px 14px rgba(0,0,0,.09);
-}
+.destaque-card{flex-shrink:0;width:160px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.09);border:none}
 .destaque-img-wrap{height:90px;background:#faf5ee;display:flex;align-items:center;justify-content:center;padding:6px}
 .destaque-img{width:100%;height:90px;object-fit:contain;padding:4px;background:#faf5ee}
 .destaque-ph{height:90px;background:#faf5ee;display:flex;align-items:center;justify-content:center;font-size:28px}
-.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.destaque-name{font-size:11px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
+.destaque-body{padding:8px 12px 12px}
+.destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 
 /* GRID DE PRODUTOS — 2 colunas como na imagem */
@@ -318,7 +312,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 
 /* CARRINHO */
 .cart-items{margin-bottom:14px}
-.cart-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-radius:14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cart-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--cream);border-radius:14px;margin-bottom:8px}
 .cart-thumb{width:48px;height:48px;border-radius:12px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0}
 .cart-thumb img{width:44px;height:44px;object-fit:contain;padding:4px;background:#faf5ee}
 .cart-item-info{flex:1;min-width:0}
@@ -327,7 +321,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 .cart-qty-ctrl{display:flex;align-items:center;gap:6px}
 .qty-btn{width:30px;height:30px;border-radius:50%;border:none;background:var(--green-pale);font-size:18px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--green-d);transition:.15s}
 .qty-val{font-size:15px;font-weight:900;color:var(--text);min-width:24px;text-align:center}
-.cart-summary{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:14px}
+.cart-summary{background:var(--cream);border-radius:16px;padding:16px;margin-bottom:14px}
 .cart-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:14px}
 .cart-row.total{font-size:18px;font-weight:900;color:var(--text);border-top:2px solid var(--gray2);padding-top:10px;margin-top:6px}
 .cart-checkout-btn{width:100%;background:var(--green);color:#fff;border:none;padding:15px;border-radius:50px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(45,122,58,.3);transition:.2s}
@@ -448,12 +442,12 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 /* DESTAQUES */
 .destaque-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
 .destaque-scroll::-webkit-scrollbar{display:none}
-.destaque-card{flex-shrink:0;width:130px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.09)}
+.destaque-card{flex-shrink:0;width:160px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.09);border:none}
 .destaque-img-wrap{height:90px;background:#faf5ee;display:flex;align-items:center;justify-content:center;padding:6px}
 .destaque-img{width:100%;height:90px;object-fit:contain;padding:4px;background:#faf5ee}
 .destaque-ph{height:90px;background:#faf5ee;display:flex;align-items:center;justify-content:center;font-size:28px}
-.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.destaque-name{font-size:11px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
+.destaque-body{padding:8px 12px 12px}
+.destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 .destaque-badge{position:absolute;top:6px;left:6px;background:var(--orange);color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:50px}
 .destaque-wrap{position:relative}
@@ -472,7 +466,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 #main-content{padding-bottom:0}
 
 /* CART BTN no header */
-.cart-btn{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:50px;padding:8px 14px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;transition:.15s}
+.cart-btn{background:transparent;color:#fff;border:none;border-radius:50px;padding:6px 10px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;position:relative}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:var(--orange);color:#fff;font-size:9px;font-weight:900;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #faf0e0}
 
 /* TIME SLOTS */
@@ -516,7 +510,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 .admin-edit-btn.acc-open{background:#dcfce7;border-color:#4ade80;color:#166534}
 .acc-form{background:#f8fafb;border:1.5px solid #e8f5e9;border-radius:0 0 14px 14px;animation:accFade .2s ease;overflow:hidden;margin-top:-6px}
 @keyframes accFade{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.acc-body{padding:14px}
+.acc-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .acc-input{padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;width:100%;transition:.2s;box-sizing:border-box}
 .acc-input:focus{border-color:var(--green);box-shadow:0 0 0 2px rgba(45,122,58,.1)}
 .acc-type{padding:7px 12px;border-radius:50px;border:1.5px solid #e0e0e0;background:#fff;font-size:12px;font-weight:800;cursor:pointer;color:#666;font-family:inherit;transition:.2s}
@@ -527,9 +521,10 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:sticky;top:
 
 
 
-.card-body{padding:8px 12px 12px}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .price-unit{font-size:11px;color:#888;font-weight:600}
-.card-add:active{transform:scale(.97);background:var(--green-d)}</style>
+.card-add:active{transform:scale(.97);background:var(--green-d)}
+#main-content,.products-section,.main-content{background:#fff !important}</style>
 </head>
 <body>
 <header>
@@ -1164,7 +1159,7 @@ var badge = disc ? '<div class="destaque-promo-badge">-' + disc + '%</div>' : ''
 return '<div class="destaque-card"><div class="destaque-img-wrap">' + imgH + badge + '</div>'
 + '<div class="destaque-body"><div class="destaque-name">' + p.name + '</div>'
 + '<div class="destaque-pricing">' + pricingHTML(p) + '</div>'
-+ '<button class="destaque-add" onclick="addToCart(' + p.id + ')">+</button>'
++ '<button class="card-add" onclick="addToCart(' + p.id + ')">＋ Adicionar</button>'
 + '</div></div>';
 }
 
@@ -2093,7 +2088,7 @@ var badge = disc ? '<div class="destaque-promo-badge">-' + disc + '%</div>' : ''
 return '<div class="destaque-card"><div class="destaque-img-wrap">' + imgH + badge + '</div>'
 + '<div class="destaque-body"><div class="destaque-name">' + p.name + '</div>'
 + '<div class="destaque-pricing">' + pricingHTML(p) + '</div>'
-+ '<button class="destaque-add" onclick="addToCart(' + p.id + ')">+</button>'
++ '<button class="card-add" onclick="addToCart(' + p.id + ')">＋ Adicionar</button>'
 + '</div></div>';
 }
 
