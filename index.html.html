@@ -49,7 +49,7 @@
 *{-webkit-tap-highlight-color:transparent}
 
 /* FUNDO MADEIRA */
-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 img{max-width:100%;display:block}
 button{cursor:pointer;font-family:inherit;border:none;outline:none;touch-action:manipulation}
 input,select,textarea{font-family:inherit}
@@ -93,7 +93,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 }
 
 /* TICKER */
-.ticker-bar{background:var(--orange);overflow:hidden;padding:6px 0;margin-top:64px}
+.ticker-bar{background:var(--orange);overflow:hidden;padding:6px 0;margin-top:0}
 .ticker-track{display:flex;gap:0;animation:ticker 18s linear infinite;width:max-content}
 .ticker-item{font-size:12px;font-weight:800;color:#fff;white-space:nowrap;padding:0 20px}
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -126,7 +126,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .filter-btn .fi{font-size:14px}
 
 /* CONTEÚDO PRINCIPAL */
-.#main-content{padding:80px 14px 100px;background:#fff}
+.#main-content{padding:14px 14px 100px;background:#fff}
 
 /* HERO */
 .hero{
@@ -175,7 +175,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .destaque-img-wrap{height:120px;background:#fff;display:flex;align-items:center;justify-content:center;padding:8px}
 .destaque-img{width:100%;height:110px;object-fit:contain;background:#fff;padding:4px}
 .destaque-ph{height:110px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:36px}
-.destaque-body{padding:8px 12px 12px}
+.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 
@@ -198,7 +198,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .badge-top{background:var(--yellow);color:#2a1a08;font-size:9px;font-weight:900;padding:3px 7px;border-radius:50px}
 .badge-promo{background:var(--red);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:50px}
 .card-qty-badge{background:var(--orange);color:#fff;font-size:10px;font-weight:900;text-align:center;padding:3px 8px;border-radius:0 0 14px 14px;margin-top:-2px}
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .card-name{font-size:13px;font-weight:800;color:#1a1a1a;margin-bottom:2px;line-height:1.3}
 .price-block{margin-bottom:8px}
 .price-main{font-size:15px;font-weight:900;color:#1a1a1a}
@@ -268,46 +268,30 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .panel-header{padding:18px 18px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .panel-title{font-size:18px;font-weight:900;color:var(--text);font-family:var(--font-title)}
 .panel-close{font-size:22px;cursor:pointer;color:var(--text2);background:#fff;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.panel-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.panel-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:auto}
 
 /* FORMULÁRIO */
 .form-group{margin-bottom:14px}
-.form-label{display:block;font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px}
-.form-input{
-  width:100%;padding:12px 14px;
-  border:2px solid var(--cream3);
-  border-radius:12px;
-  font-size:15px;font-family:inherit;
-  background:#fff;color:var(--text);outline:none;transition:.2s;
-}
+.form-label{display:block;font-size:13px;font-weight:800;color:#333;margin-bottom:6px}
+.form-input{width:100%;padding:12px 14px;border:2px solid #e8e8e8;border-radius:12px;font-size:15px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;transition:.2s}
 .form-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,98,26,.1)}
 
 /* PAGAMENTO */
-.pay-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}
-.pay-opt{
-  border:2px solid var(--cream3);
-  border-radius:14px;background:#fff;
-  padding:12px 6px;
-  text-align:center;cursor:pointer;transition:.2s;
-}
-.pay-opt.selected{border-color:var(--orange);background:#fff8f5}
-.pay-opt-icon{font-size:22px;margin-bottom:4px}
-.pay-opt-label{font-size:11px;font-weight:800;color:var(--text2)}
-.pay-opt.selected .pay-opt-label{color:var(--orange)}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.pay-opt{border:2px solid #e8e8e8;border-radius:14px;background:#fff;padding:14px 8px;text-align:center;cursor:pointer;transition:.2s}
+.pay-opt.selected{border-color:var(--green);background:var(--green-pale)}
+.pay-opt-icon{font-size:26px;margin-bottom:6px}
+.pay-opt-label{font-size:12px;font-weight:800;color:#444}
+.pay-opt.selected .pay-opt-label{font-size:12px;font-weight:800;color:#444}
 
 /* HORÁRIOS */
-.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
-.time-slot{
-  border:2px solid var(--cream3);
-  border-radius:14px;background:#fff;
-  padding:12px 10px;cursor:pointer;transition:.2s;
-  text-align:center;
-}
-.time-slot.selected{border-color:var(--orange);background:#fff8f5}
-.time-slot-label{font-size:13px;font-weight:800;color:var(--text)}
-.time-slot-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.time-slot{border:2px solid #e8e8e8;border-radius:14px;background:#fff;padding:12px 10px;cursor:pointer;transition:.2s;text-align:center}
+.time-slot.selected{border-color:var(--green);background:var(--green-pale)}
+.time-slot-label{font-size:13px;font-weight:900;color:#222}
+.time-slot-sub{font-size:11px;color:#888;margin-top:2px}
 .time-slot-badge{background:var(--orange);color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:50px;display:inline-block;margin-bottom:4px}
 
 /* CARRINHO */
@@ -407,7 +391,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .checkout-user-name{font-size:15px;font-weight:900;color:var(--text)}
 .checkout-user-addr{font-size:13px;color:var(--text2);margin-top:3px}
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .card-bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto}
 
 .card-add{background:var(--green);color:#fff;border:none;border-radius:50px;padding:10px 0;font-size:14px;font-weight:900;cursor:pointer;width:100%;font-family:inherit;transition:.18s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;letter-spacing:.2px}
@@ -428,7 +412,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .trust-badge{display:flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--cream3);border-radius:50px;padding:6px 14px;font-size:11px;font-weight:800;color:var(--text2);white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 
 /* INFO STRIP */
-.info-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 14px;scrollbar-width:none;margin-top:64px}
+.info-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 14px;scrollbar-width:none;margin-top:0}
 .info-strip::-webkit-scrollbar{display:none}
 .info-chip{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--cream3);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:800;color:var(--text2);white-space:nowrap;flex-shrink:0}
 
@@ -446,7 +430,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .destaque-img-wrap{height:120px;background:#fff;display:flex;align-items:center;justify-content:center;padding:8px}
 .destaque-img{width:100%;height:110px;object-fit:contain;background:#fff;padding:4px}
 .destaque-ph{height:110px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:36px}
-.destaque-body{padding:8px 12px 12px}
+.destaque-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .destaque-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3}
 .destaque-price{font-size:13px;font-weight:900;color:var(--green-d)}
 .destaque-badge{position:absolute;top:6px;left:6px;background:var(--orange);color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:50px}
@@ -455,7 +439,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 /* CARD + BOTÃO */
 .card-add{background:var(--green);color:#fff;border:none;border-radius:50px;padding:10px 0;font-size:14px;font-weight:900;cursor:pointer;width:100%;font-family:inherit;transition:.18s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;letter-spacing:.2px}
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .card-price-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto;padding-top:6px}
 
 /* GRID 2 COLUNAS — forçado */
@@ -471,7 +455,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 
 /* TIME SLOTS */
 .time-slots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
-.time-unavail-note{background:#fff8f0;border:1.5px solid #fed7aa;border-radius:12px;padding:8px 14px;font-size:12px;color:#c2410c;font-weight:800;margin-bottom:12px;text-align:center}
+.time-unavail-note{background:#fff5f0;border:1.5px solid #fdd;border-radius:10px;padding:8px 14px;font-size:12px;color:#c2410c;font-weight:800;margin-bottom:10px;text-align:center}
 
 
 #admin-panel{display:none;position:fixed;inset:0;background:#f4f4f4;z-index:300;overflow-y:auto;padding-bottom:40px}
@@ -484,7 +468,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .admin-header{display:flex;align-items:center;justify-content:space-between;padding:16px;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:10}
 .admin-header h2{font-size:18px;font-weight:900;color:var(--text)}
 .admin-close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)}
-.admin-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.admin-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .admin-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
 .stat-card{background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .stat-val{font-size:24px;font-weight:900;color:var(--green-d);margin-bottom:4px}
@@ -510,7 +494,7 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 .admin-edit-btn.acc-open{background:#dcfce7;border-color:#4ade80;color:#166534}
 .acc-form{background:#f8fafb;border:1.5px solid #e8f5e9;border-radius:0 0 14px 14px;animation:accFade .2s ease;overflow:hidden;margin-top:-6px}
 @keyframes accFade{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.acc-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.acc-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .acc-input{padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;width:100%;transition:.2s;box-sizing:border-box}
 .acc-input:focus{border-color:var(--green);box-shadow:0 0 0 2px rgba(45,122,58,.1)}
 .acc-type{padding:7px 12px;border-radius:50px;border:1.5px solid #e0e0e0;background:#fff;font-size:12px;font-weight:800;cursor:pointer;color:#666;font-family:inherit;transition:.2s}
@@ -521,14 +505,37 @@ header{background:var(--green);color:#fff;padding:12px 16px;position:fixed;top:0
 
 
 
-.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.card-body{font-family:'Nunito',sans-serif;background:#fff;color:var(--text);max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 .price-unit{font-size:11px;color:#888;font-weight:600}
 .card-add:active{transform:scale(.97);background:var(--green-d)}
 #main-content,.products-section,.main-content{background:#fff !important}
 #destaques-section{background:#fff}
 .destaques-scroll{background:#fff}
 body>*:not(header){margin-top:0}
-.ticker-bar{background:var(--orange);overflow:hidden;padding:6px 0;margin-top:64px}</style>
+.ticker-bar{background:var(--orange);overflow:hidden;padding:6px 0;margin-top:0}
+.pay-opt.selected .pay-opt-label{color:var(--green-d)}
+.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(45,122,58,.08)}
+.send-btn{
+  width:100%;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  padding:16px;
+  border-radius:50px;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  font-family:inherit;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  box-shadow:0 6px 20px rgba(45,122,58,.35);
+  transition:.2s;
+  margin-top:8px;
+}
+.send-btn:active{transform:scale(.97);background:var(--green-d)}
+.back-cart-btn{background:none;border:none;color:var(--green-d);font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:8px;display:block;text-align:center}</style>
 </head>
 <body>
 <header>
@@ -688,10 +695,7 @@ Nossos produtos
 <label class="form-label">Observações (opcional)</label>
 <textarea class="form-input" id="cl-obs" rows="2" placeholder="Ex: banana bem madura, cenoura grande..."></textarea>
 </div>
-<button class="send-btn" onclick="sendWhatsApp()">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-Enviar pedido via WhatsApp
-</button>
+<button class="send-btn" onclick="sendWhatsApp()">💬 Enviar pedido via WhatsApp</button>
 <button class="back-link" onclick="backToCart()">← Voltar ao carrinho</button>
 </div>
 <div id="admin-panel">
