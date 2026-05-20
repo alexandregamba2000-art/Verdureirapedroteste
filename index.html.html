@@ -588,6 +588,44 @@ body.no-scroll{
 .screen-header{
   z-index:10001 !important;
 }
+
+#checkout-screen{
+  position:fixed !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  z-index:99999 !important;
+  overflow-y:scroll !important;
+  -webkit-overflow-scrolling:touch !important;
+  background:#faf5ec !important;
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+#checkout-screen .screen-body{
+  padding:14px 14px 120px 14px !important;
+}
+#checkout-screen .screen-header{
+  position:sticky !important;
+  top:0 !important;
+  z-index:100000 !important;
+  left:0 !important;
+  right:0 !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:100% !important;
+}
+#cart-screen{
+  position:fixed !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  z-index:99999 !important;
+  overflow-y:scroll !important;
+  -webkit-overflow-scrolling:touch !important;
+  background:#faf5ec !important;
+}
 </style>
 </head>
 <body>
@@ -928,6 +966,14 @@ function openCheckoutScreen() {
   _csTimeSelected = '';
   screen.classList.add('active');
   screen.scrollTop = 0;
+  // Esconder nav e header enquanto checkout estiver aberto
+  var nav = document.querySelector('.bottom-nav');
+  var hdr = document.querySelector('header');
+  var cartBar = document.getElementById('cart-bar');
+  if (nav) nav.style.display = 'none';
+  if (hdr) hdr.style.display = 'none';
+  if (cartBar) cartBar.style.display = 'none';
+  document.body.style.overflow = 'hidden';
 }
 
 var _csPaySelected = '';
@@ -1017,6 +1063,13 @@ function csSendWhatsApp() {
 function closeCheckoutScreen() {
   var screen = document.getElementById('checkout-screen');
   if (screen) screen.classList.remove('active');
+  var nav = document.querySelector('.bottom-nav');
+  var hdr = document.querySelector('header');
+  var cartBar = document.getElementById('cart-bar');
+  if (nav) nav.style.display = '';
+  if (hdr) hdr.style.display = '';
+  if (cartBar) cartBar.style.display = '';
+  document.body.style.overflow = '';
 }
 
 function closeCartScreen() {
