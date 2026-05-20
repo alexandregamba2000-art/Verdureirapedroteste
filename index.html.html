@@ -574,6 +574,20 @@ body.no-scroll{
 .screen-header-title{font-size:17px;font-weight:900;flex:1}
 .screen-back-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:8px;margin-left:-8px}
 .screen-body{padding:14px 14px 200px}
+
+#checkout-screen{
+  z-index:10000 !important;
+  padding-bottom:0 !important;
+}
+#checkout-screen .screen-body{
+  padding-bottom:200px !important;
+}
+#cart-screen{
+  z-index:10000 !important;
+}
+.screen-header{
+  z-index:10001 !important;
+}
 </style>
 </head>
 <body>
@@ -906,8 +920,8 @@ function openCheckoutScreen() {
   h += '<textarea id="cs-obs" placeholder="Ex: banana bem madura, cenoura grande..." style="width:100%;padding:12px;border:2px solid #e0d0b0;border-radius:12px;font-size:14px;font-family:inherit;background:#fff;outline:none;resize:none;min-height:80px;margin-bottom:16px"></textarea>';
   
   // Botão WhatsApp
-  h += '<button onclick="csSendWhatsApp()" style="width:100%;background:#2d6a2f;color:#fff;border:none;padding:18px;border-radius:50px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 20px rgba(45,106,47,.35);margin-bottom:12px">&#128172; Enviar pedido via WhatsApp</button>';
-  h += '<button onclick="closeCheckoutScreen()" style="width:100%;background:none;border:none;color:#8a7060;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;padding:10px">&#8592; Continuar comprando</button>';
+  h += '<div style="padding:20px 0 30px"><button onclick="csSendWhatsApp()" style="width:100%;background:#2d6a2f;color:#fff;border:none;padding:20px;border-radius:50px;font-size:18px;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(45,106,47,.4)">&#128172; Enviar pedido via WhatsApp</button></div>';
+  h += '<div style="text-align:center;padding-bottom:40px"><button onclick="closeCheckoutScreen()" style="background:none;border:none;color:#8a7060;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;padding:12px 20px;text-decoration:underline">&#8592; Voltar às compras</button></div>';
   
   body.innerHTML = h;
   _csPaySelected = '';
