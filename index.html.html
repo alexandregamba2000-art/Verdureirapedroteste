@@ -1497,30 +1497,31 @@ if (_sTaps === 3) showToast('Mais 2 toques...');
 }
 
 (function() {
-// Limpar apenas chaves ANTIGAS (não apagar vp4!)
+// Limpar cache antigo E também o cache de produtos para forçar reload do Supabase
 try {
-  ['vp3_products','vp3_cart','vp_products','vp_cart','vp_products_v2','vp_cart_v2'].forEach(function(k){
+  ['vp3_products','vp3_cart','vp_products','vp_cart','vp_products_v2','vp_cart_v2','vp4_products'].forEach(function(k){
     try{localStorage.removeItem(k);}catch(e){}
   });
 } catch(e) {}
 
-// Mostrar produtos do cache imediatamente (sem tela vazia)
+// Mostrar DEFAULT_PRODUCTS enquanto carrega
 currentCat = 'all';
+products = DEFAULT_PRODUCTS;
 renderProducts();
 renderDestaques();
 updateBadge();
 updateCartBar();
 
-// Buscar produtos atualizados do Supabase
+// Buscar SEMPRE do Supabase — ignorar cache
 loadFromCloud(function(cp) {
   if (cp && cp.length > 0) {
     products = cp;
+    try { localStorage.setItem('vp4_products', JSON.stringify(cp)); } catch(e3) {}
     renderProducts();
     renderDestaques();
     updateBadge();
     updateCartBar();
   }
-  // Se falhar, mantém o que está na tela (cache ou DEFAULT_PRODUCTS)
 });
 
 // Restaurar sessão do usuário
@@ -1528,9 +1529,7 @@ try {
   var u = localStorage.getItem('vp4_user');
   if (u) {
     currentUser = JSON.parse(u);
-    loadProfile(currentUser.id, function(){
-      updateBadge();
-    });
+    loadProfile(currentUser.id, function(){ updateBadge(); });
   }
 } catch(e) {}
 })();</script>
