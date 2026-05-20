@@ -48,7 +48,7 @@ header p{color:#8a7060 !important}
 .card-name{font-size:13px;font-weight:800;color:#3d2b1f;margin-bottom:4px}
 .price-main{font-size:15px;font-weight:900;color:#2d6a2f}
 .card-add{width:100%;background:#ff6b35;color:#fff;border:none;border-radius:50px;padding:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:8px;display:block}
-#cart-bar{background:#faf5ec !important;border:1.5px solid #e0d0b0}
+#cart-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%) translateY(120%);width:calc(100% - 28px);max-width:452px;background:#faf5ec;border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:140;transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 28px rgba(0,0,0,.18);border:1.5px solid #e0d0b0}
 .cart-bar-btn{background:#ff6b35 !important;color:#fff !important;border-radius:50px}
 
 /* CHECKOUT PAGE */
@@ -63,7 +63,8 @@ header p{color:#8a7060 !important}
   padding:0 14px 120px;
   box-sizing:border-box;
 }
-</style>
+
+#cart-bar.visible{transform:translateX(-50%) translateY(0)}</style>
 </head>
 <body>
 <header>
