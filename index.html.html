@@ -53,7 +53,7 @@ header p{color:#8a7060 !important}
 .bottom-nav{display:none !important}
 #checkout-page{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#faf5ec;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 120px;box-sizing:border-box}
 #checkout-page.active{display:block !important}
-.admin-col-right{display:none !important}.admin-product-row.active{background:#f0faf0}.admin-form-inline{background:#fafaf5;border-left:4px solid var(--green);padding:20px 24px;border-bottom:1px solid var(--gray2);animation:slideDownForm .25s ease}@keyframes slideDownForm{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.af-calc-box{background:#e8f5e9;border:1.5px solid var(--green-mid);border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--green-d);margin-bottom:12px;line-height:1.6}.af-calc-box strong{color:var(--green-d);font-weight:900}.af-calc-empty{color:#999;font-style:italic;font-weight:600}</style>
+.admin-col-right{display:none !important}.admin-product-row.active{background:#f0faf0}.admin-form-inline{background:#fafaf5;border-left:4px solid var(--green);padding:20px 24px;border-bottom:1px solid var(--gray2);animation:slideDownForm .25s ease}@keyframes slideDownForm{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.af-calc-box{background:#e8f5e9;border:1.5px solid var(--green-mid);border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--green-d);margin-bottom:12px;line-height:1.6}.af-calc-box strong{color:var(--green-d);font-weight:900}.af-calc-empty{color:#999;font-style:italic;font-weight:600}.sort-row{display:flex;align-items:center;gap:8px;padding:0 16px;margin:2px 0 6px}.sort-label{font-size:12px;font-weight:800;color:var(--text2)}.sort-btn{background:#fff;border:1.5px solid var(--gray2);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.18s;font-family:inherit}.sort-btn:active{transform:scale(.94)}.sort-btn.active{background:var(--green);border-color:var(--green);color:#fff}</style>
 </head>
 <body>
 <header>
@@ -136,7 +136,7 @@ Nossos produtos
 <button class="cat-btn" data-cat="colonias" onclick="filterCat(this.dataset.cat,this)">🧺 Colônias</button>
 <button class="cat-btn" data-cat="mercearia" onclick="filterCat(this.dataset.cat,this)">🛒 Mercearia</button>
 </div>
-<div class="products" id="products-grid"></div>
+<div class="sort-row"><span class="sort-label">Ordenar:</span><button class="sort-btn active" id="sort-btn-default" onclick="setSort('default',this)">Padrão</button><button class="sort-btn" id="sort-btn-az" onclick="setSort('az',this)">🔤 A-Z</button><button class="sort-btn" id="sort-btn-za" onclick="setSort('za',this)">🔤 Z-A</button></div><div class="products" id="products-grid"></div>
 </div>
 <button class="wa-float" onclick="openWA()" aria-label="WhatsApp">
 <div class="wa-ring"></div>
@@ -387,6 +387,7 @@ function saveOneProduct(prod,cb){
 var products = [];
 var cart = [];
 var currentCat = 'all';
+var currentSort = 'default';
 var searchTerm = '';
 var adminFilter = '';
 var currentUser = null;
@@ -659,6 +660,12 @@ if (currentCat !== 'all' && p.cat !== currentCat) continue;
 if (searchTerm && p.name.toLowerCase().indexOf(searchTerm) < 0) continue;
 filtered.push(p);
 }
+// Aplicar ordenacao
+if (currentSort === 'az') {
+filtered.sort(function(a, b) { return a.name.localeCompare(b.name, 'pt-BR', {sensitivity:'base'}); });
+} else if (currentSort === 'za') {
+filtered.sort(function(a, b) { return b.name.localeCompare(a.name, 'pt-BR', {sensitivity:'base'}); });
+}
 if (!filtered.length) {
 var msg = searchTerm ? 'Nenhum resultado' : 'Nenhum produto nesta categoria';
 grid.innerHTML = '<div class="search-no-result"><div style="font-size:48px;text-align:center">🔍</div><p style="font-weight:800;font-size:15px;text-align:center">' + msg + '</p></div>';
@@ -684,6 +691,13 @@ setTimeout(function(){ renderDestaques(); lazyLoad(); }, 16);
 }
 }
 
+function setSort(s, btn) {
+currentSort = s;
+var btns = document.querySelectorAll('.sort-btn');
+for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+if (btn) btn.classList.add('active');
+renderProducts();
+}
 function filterCat(cat, btn) {
 currentCat = cat;
 var btns = document.querySelectorAll('.cat-btn');
