@@ -53,7 +53,7 @@ header p{color:#8a7060 !important}
 .bottom-nav{display:none !important}
 #checkout-page{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#faf5ec;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 120px;box-sizing:border-box}
 #checkout-page.active{display:block !important}
-.admin-col-right{display:none !important}.admin-product-row.active{background:#f0faf0}.admin-form-inline{background:#fafaf5;border-left:4px solid var(--green);padding:20px 24px;border-bottom:1px solid var(--gray2);animation:slideDownForm .25s ease}@keyframes slideDownForm{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.af-calc-box{background:#e8f5e9;border:1.5px solid var(--green-mid);border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--green-d);margin-bottom:12px;line-height:1.6}.af-calc-box strong{color:var(--green-d);font-weight:900}.af-calc-empty{color:#999;font-style:italic;font-weight:600}.sort-row{display:flex;align-items:center;gap:8px;padding:0 16px;margin:2px 0 6px}.sort-label{font-size:12px;font-weight:800;color:var(--text2)}.sort-btn{background:#fff;border:1.5px solid var(--gray2);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.18s;font-family:inherit}.sort-btn:active{transform:scale(.94)}.sort-btn.active{background:var(--green);border-color:var(--green);color:#fff}</style>
+.admin-col-right{display:none !important}.admin-product-row.active{background:#f0faf0}.admin-form-inline{background:#fafaf5;border-left:4px solid var(--green);padding:20px 24px;border-bottom:1px solid var(--gray2);animation:slideDownForm .25s ease}@keyframes slideDownForm{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.af-calc-box{background:#e8f5e9;border:1.5px solid var(--green-mid);border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--green-d);margin-bottom:12px;line-height:1.6}.af-calc-box strong{color:var(--green-d);font-weight:900}.af-calc-empty{color:#999;font-style:italic;font-weight:600}.sort-row{display:flex;align-items:center;gap:8px;padding:0 16px;margin:2px 0 6px}.sort-label{font-size:12px;font-weight:800;color:var(--text2)}.sort-btn{background:#fff;border:1.5px solid var(--gray2);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.18s;font-family:inherit}.sort-btn:active{transform:scale(.94)}.sort-btn.active{background:var(--green);border-color:var(--green);color:#fff}.fr-selector{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}.fr-opt{border:1.5px solid var(--gray2);border-radius:6px;padding:5px 4px;font-size:11px;font-weight:800;color:var(--text2);background:#fff;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;line-height:1.2;font-family:inherit}.fr-opt.selected{border-color:var(--green);background:var(--green-pale);color:var(--green-d)}.fr-opt .fr-price{font-size:10px;font-weight:900;color:var(--green-d);margin-top:1px}.admin-product-row.row-hidden{opacity:.55;background:#fafafa}.abadge-hidden{background:#fee;color:#c00}.fr-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}.fr-admin-opt{border:1.5px solid var(--gray2);border-radius:8px;padding:8px;font-size:12px;font-weight:800;color:var(--text2);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;font-family:inherit}.fr-admin-opt input{accent-color:var(--green)}.fr-admin-opt.checked{border-color:var(--green);background:var(--green-pale);color:var(--green-d)}</style>
 </head>
 <body>
 <header>
@@ -372,7 +372,7 @@ function saveOneProduct(prod,cb){
     price_old:prod.priceOld||null,price_per_unit:prod.pricePerUnit||null,
     sale_type:prod.saleType||'kg',cat:prod.cat,img:img,hot:prod.hot||false,
     star:prod.star||false,avg_weight:prod.avgWeight||null,gram_options:prod.gramOptions||'',
-    hidden:prod.hidden||false,sort_order:prod.sortOrder||99};
+    hidden:prod.hidden||false,sort_order:prod.sortOrder||99,frac_options:prod.fracOptions||''};
   fetch(SUPABASE_URL+'/rest/v1/products?id=eq.'+prod.id,{method:'PATCH',
     headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
       'Content-Type':'application/json','Prefer':'return=minimal'},
@@ -455,7 +455,10 @@ var rows = p.map(function(prod) {
     hot: prod.hot || false,
     star: prod.star || false,
     avg_weight: prod.avgWeight || null,
-    gram_options: prod.gramOptions || ''
+    gram_options: prod.gramOptions || '',
+    hidden: prod.hidden || false,
+    sort_order: prod.sortOrder || 99,
+    frac_options: prod.fracOptions || ''
   };
 });
 fetch(SUPABASE_URL + '/rest/v1/products?on_conflict=id', {
@@ -484,7 +487,7 @@ fetch(SUPABASE_URL + '/rest/v1/products?select=*&order=sort_order.asc,id.asc', {
         price: parseFloat(p.price), priceOld: p.price_old ? parseFloat(p.price_old) : null,
         pricePerUnit: p.price_per_unit ? parseFloat(p.price_per_unit) : null,
         saleType: p.sale_type || 'kg', cat: p.cat, img: p.img || '',
-        hot: p.hot||false, star: p.star||false, hidden: p.hidden||false, sortOrder: p.sort_order||99, avgWeight: p.avg_weight||null, gramOptions: p.gram_options||''
+        hot: p.hot||false, star: p.star||false, hidden: p.hidden||false, sortOrder: p.sort_order||99, avgWeight: p.avg_weight||null, gramOptions: p.gram_options||'', fracOptions: p.frac_options||''
       };
     });
     var vis=mapped.filter(function(p){return !p.hidden;}); saveProductsLocal(vis); cb(vis);
@@ -503,10 +506,14 @@ if (!isNaN(n) && n > 0) result.push(n);
 return result.length ? result : [100, 200, 500];
 }
 
-function calcPrice(p, grams) {
+function calcPrice(p, grams, frac) {
 if (p.saleType === 'gramas') {
 var g = grams || getGramOpts(p)[0];
 return (p.price / 100) * g;
+}
+if (p.saleType === 'frac') {
+var f = frac || getFracOpts(p)[0];
+return p.price * f;
 }
 return p.price;
 }
@@ -516,11 +523,31 @@ if (!p.priceOld || p.priceOld <= p.price) return 0;
 return Math.round((1 - p.price / p.priceOld) * 100);
 }
 
+function fracLabel(n) {
+if (n === 1) return 'Inteira';
+if (Math.abs(n - 0.5) < 0.001) return '1/2';
+if (Math.abs(n - 0.25) < 0.001) return '1/4';
+if (Math.abs(n - 0.125) < 0.001) return '1/8';
+if (Math.abs(n - 0.75) < 0.001) return '3/4';
+if (Math.abs(n - 0.333) < 0.01) return '1/3';
+return n.toString();
+}
+function getFracOpts(p) {
+var s = p.fracOptions || '1,0.5,0.25,0.125';
+var out = [];
+var parts = s.toString().split(',');
+for (var i = 0; i < parts.length; i++) {
+var n = parseFloat(parts[i]);
+if (!isNaN(n) && n > 0 && n <= 1) out.push(n);
+}
+return out.length ? out : [1, 0.5, 0.25, 0.125];
+}
 function priceLabel(p) {
 if (p.saleType === 'kg') return '/kg';
 if (p.saleType === 'un') return '/un';
 if (p.saleType === 'bj') return '/bj';
 if (p.saleType === 'gramas') return '/100g';
+if (p.saleType === 'frac') return '/un';
 return '';
 }
 
@@ -535,6 +562,9 @@ if (item.saleType === 'gramas') {
 var up = item.unitPrice || item.price;
 return item.grams + 'g - R$ ' + up.toFixed(2) + '/100g';
 }
+if (item.saleType === 'frac') {
+return fracLabel(item.fraction || 1) + ' - R$ ' + item.price.toFixed(2);
+}
 return '';
 }
 
@@ -542,6 +572,20 @@ function pricingHTML(p) {
 var disc = discountPct(p);
 var lbl = priceLabel(p);
 
+if (p.saleType === 'frac') {
+var fopts = getFracOpts(p);
+var fsel = selectedFracs[p.id] || fopts[0];
+var fcalc = p.price * fsel;
+var fb = '<div class="price-block"><span class="price-main">R$ ' + fcalc.toFixed(2) + '</span> <span class="price-sub" style="display:inline;margin-left:4px">' + fracLabel(fsel) + '</span></div>';
+fb += '<div class="fr-selector">';
+for (var fi = 0; fi < fopts.length; fi++) {
+var fr = fopts[fi];
+var frSel = (fr === fsel) ? ' selected' : '';
+fb += '<button class="fr-opt' + frSel + '" onclick="selectFrac(' + p.id + ',' + fr + ',event)"><span>' + fracLabel(fr) + '</span><span class="fr-price">R$ ' + (p.price * fr).toFixed(2) + '</span></button>';
+}
+fb += '</div>';
+return fb;
+}
 if (p.saleType === 'gramas') {
 var opts = getGramOpts(p);
 var sel = selectedGrams[p.id] || opts[0];
@@ -580,6 +624,8 @@ return '<div class="price-block">' + dH2 + '<span class="price-main">R$ ' + p.pr
 }
 
 function selectGram(pid, grams, e) { if (e) e.stopPropagation(); selectedGrams[pid] = grams; renderProducts(); }
+var selectedFracs = {};
+function selectFrac(pid, frac, e) { if (e) e.stopPropagation(); selectedFracs[pid] = frac; renderProducts(); }
 function setBuyMode(pid, mode, e) { if (e) e.stopPropagation(); selectedBuyMode[pid] = mode; renderProducts(); }
 
 function lazyLoad() {
@@ -624,7 +670,7 @@ return '<div class="destaque-card"><div class="destaque-img-wrap">' + imgH + bad
 
 function renderDestaques() {
 var hot = [], star = [];
-for (var i = 0; i < products.length; i++) {
+for (var i = 0; i < products.length; i++) { if (products[i].hidden) continue;
 if (products[i].hot) hot.push(products[i]);
 if (products[i].star) star.push(products[i]);
 }
@@ -656,6 +702,7 @@ if (!grid) return;
 var filtered = [];
 for (var i = 0; i < products.length; i++) {
 var p = products[i];
+if (p.hidden) continue;
 if (currentCat !== 'all' && p.cat !== currentCat) continue;
 if (searchTerm && p.name.toLowerCase().indexOf(searchTerm) < 0) continue;
 filtered.push(p);
@@ -728,11 +775,15 @@ var p = null;
 for (var i = 0; i < products.length; i++) { if (products[i].id === id) { p = products[i]; break; } }
 if (!p) return;
 var grams = p.saleType === 'gramas' ? (selectedGrams[p.id] || getGramOpts(p)[0]) : null;
+var frac  = p.saleType === 'frac'   ? (selectedFracs[p.id] || getFracOpts(p)[0]) : null;
 var dualMode = (p.saleType === 'kg' && p.pricePerUnit) ? (selectedBuyMode[p.id] || 'kg') : null;
 var unitPrice, cartST, cartAW, key, suffix;
 if (dualMode === 'un') {
 unitPrice = p.pricePerUnit; cartST = 'un'; cartAW = p.avgWeight || null;
 key = id + '_un'; suffix = ' (unidade)';
+} else if (p.saleType === 'frac') {
+unitPrice = calcPrice(p, null, frac); cartST = 'frac'; cartAW = null;
+key = id + '_f' + frac; suffix = ' (' + fracLabel(frac) + ')';
 } else {
 unitPrice = calcPrice(p, grams); cartST = p.saleType; cartAW = p.avgWeight || null;
 key = p.saleType === 'gramas' ? id + '_' + grams : '' + id;
@@ -741,7 +792,7 @@ suffix = grams ? ' (' + grams + 'g)' : '';
 var found = null;
 for (var j = 0; j < cart.length; j++) { if (cart[j].key === key) { found = cart[j]; break; } }
 if (found) { found.qty++; }
-else { cart.push({ key: key, id: p.id, name: p.name, price: unitPrice, unitPrice: p.price, saleType: cartST, avgWeight: cartAW, emoji: p.emoji, img: p.img, grams: grams, qty: 1 }); }
+else { cart.push({ key: key, id: p.id, name: p.name, price: unitPrice, unitPrice: p.price, saleType: cartST, avgWeight: cartAW, emoji: p.emoji, img: p.img, grams: grams, fraction: frac, qty: 1 }); }
 saveCart(); updateBadge(); updateCartBar();
 showToast(p.emoji + ' ' + p.name + suffix + ' adicionado!');
 }
@@ -962,11 +1013,11 @@ if (!ps.length && _editId !== 'new') { list.innerHTML = '<div class="admin-empty
 for (var j = 0; j < ps.length; j++) {
 var p = ps[j], d = discountPct(p);
 var thumb = p.img ? '<img class="admin-thumb" src="' + p.img + '" alt="' + p.name + '" loading="lazy">' : '<div class="admin-thumb-ph">' + p.emoji + '</div>';
-var badges = (p.hot ? '<span class="abadge abadge-hot">Oferta</span>' : '') + (p.star ? '<span class="abadge abadge-star">Top</span>' : '') + (d ? '<span class="abadge abadge-promo">-' + d + '%</span>' : '') + (p.img ? '' : '<span class="abadge" style="background:#f5f5f5;color:#999">sem foto</span>');
+var badges = (p.hidden ? '<span class="abadge abadge-hidden">🚫 Oculto</span>' : '') + (p.hot ? '<span class="abadge abadge-hot">Oferta</span>' : '') + (p.star ? '<span class="abadge abadge-star">Top</span>' : '') + (d ? '<span class="abadge abadge-promo">-' + d + '%</span>' : '') + (p.img ? '' : '<span class="abadge" style="background:#f5f5f5;color:#999">sem foto</span>');
 var isActive = (_editId === p.id);
 var btnLabel = isActive ? 'Fechar' : 'Editar';
 var btnAction = isActive ? 'cancelForm()' : 'showAdminForm(' + p.id + ')';
-html += '<div class="admin-product-row' + (isActive ? ' active' : '') + '">' + thumb + '<div class="admin-product-info"><div class="admin-product-name">' + p.name + '</div><div class="admin-product-meta">R$ ' + p.price.toFixed(2) + '/' + p.saleType + ' - ' + p.cat + '</div><div class="admin-badges">' + badges + '</div></div><div class="admin-row-btns"><button class="admin-edit-btn" onclick="' + btnAction + '">' + btnLabel + '</button><button class="admin-del-btn" onclick="deleteProduct(' + p.id + ')">X</button></div></div>';
+html += '<div class="admin-product-row' + (isActive ? ' active' : '') + (p.hidden ? ' row-hidden' : '') + '">' + thumb + '<div class="admin-product-info"><div class="admin-product-name">' + p.name + '</div><div class="admin-product-meta">R$ ' + p.price.toFixed(2) + '/' + p.saleType + ' - ' + p.cat + '</div><div class="admin-badges">' + badges + '</div></div><div class="admin-row-btns"><button class="admin-edit-btn" onclick="' + btnAction + '">' + btnLabel + '</button><button class="admin-del-btn" onclick="deleteProduct(' + p.id + ')">X</button></div></div>';
 if (isActive) { html += '<div class="admin-form-inline">' + buildAdminFormHTML(p) + '</div>'; }
 }
 list.innerHTML = html;
@@ -1030,7 +1081,8 @@ h += '<div class="af-section-label">Tipo de venda</div><div class="sale-type-row
 h += '<button class="sale-type-btn' + (_saleType === 'kg' ? ' active' : '') + '" onclick="setSaleType(\'kg\',this)">KG</button>';
 h += '<button class="sale-type-btn' + (_saleType === 'un' ? ' active' : '') + '" onclick="setSaleType(\'un\',this)">Unidade</button>';
 h += '<button class="sale-type-btn' + (_saleType === 'bj' ? ' active' : '') + '" onclick="setSaleType(\'bj\',this)">Bandeja</button>';
-h += '<button class="sale-type-btn' + (_saleType === 'gramas' ? ' active' : '') + '" onclick="setSaleType(\'gramas\',this)">Gramas</button></div>';
+h += '<button class="sale-type-btn' + (_saleType === 'gramas' ? ' active' : '') + '" onclick="setSaleType(\'gramas\',this)">Gramas</button>';
+h += '<button class="sale-type-btn' + (_saleType === 'frac' ? ' active' : '') + '" onclick="setSaleType(\'frac\',this)">Fração</button></div>';
 // KG fields
 h += '<div id="af-kg-fields"' + (_saleType !== 'kg' ? ' style="display:none"' : '') + '>';
 h += '<div class="af-row"><input class="af-input" id="af-price-kg" placeholder="Preco por kg *" type="number" step="0.01" min="0" oninput="recalcPriceDisplay()" value="' + (p && p.saleType === 'kg' ? p.price : '') + '">';
@@ -1053,17 +1105,45 @@ h += '<input class="af-input" id="af-price-gram" placeholder="Preco/100g *" type
 h += '<input class="af-input" id="af-gram-opts" placeholder="Opcoes em gramas (ex: 100,200,500)" oninput="recalcPriceDisplay()" value="' + gramVal + '">';
 h += '<div class="af-calc-box" id="af-calc-gram"><span class="af-calc-empty">Preencha preco/100g pra ver cada opcao calculada</span></div>';
 h += '</div>';
+// Frac fields
+var fOpts = p && p.fracOptions ? p.fracOptions : '1,0.5,0.25,0.125';
+var fActive = {};
+var fParts = fOpts.toString().split(',');
+for (var fi = 0; fi < fParts.length; fi++) { fActive[parseFloat(fParts[fi]).toString()] = true; }
+h += '<div id="af-frac-fields"' + (_saleType !== 'frac' ? ' style="display:none"' : '') + '>';
+h += '<input class="af-input" id="af-price-frac" placeholder="Preco da unidade INTEIRA *" type="number" step="0.01" min="0" oninput="recalcPriceDisplay()" value="' + (p && p.saleType === "frac" ? p.price : "") + '">';
+h += '<div class="af-section-label" style="margin-top:8px">Frações que voce vende</div>';
+h += '<div class="fr-admin-grid">';
+var fAll = [[1,"Inteira"],[0.5,"1/2"],[0.25,"1/4"],[0.125,"1/8"]];
+for (var fai = 0; fai < fAll.length; fai++) {
+var fv = fAll[fai][0], fnm = fAll[fai][1];
+var ck = fActive[fv.toString()] ? " checked" : "";
+var clk = ck ? " checked" : "";
+h += '<label class="fr-admin-opt' + clk + '" onclick="setTimeout(function(){updateFracAdminLabels();recalcPriceDisplay();},10)"><input type="checkbox" class="frac-cb" data-fv="' + fv + '"' + ck + '> ' + fnm + '</label>';
+}
+h += '</div>';
+h += '<div class="af-calc-box" id="af-calc-frac"><span class="af-calc-empty">Preencha preco da inteira e escolha as frações</span></div>';
+h += '</div>';
 h += '<div class="af-section-label">Promocao (opcional)</div>';
 h += '<label class="af-check" style="margin-bottom:10px"><input type="checkbox" id="af-has-promo"' + (hasDisc ? ' checked' : '') + ' onchange="togglePromoFields(this)"> Marcar como promocao</label>';
 h += '<div id="af-promo-fields"' + (!hasDisc ? ' style="display:none"' : '') + '>';
 h += '<input class="af-input" id="af-price-old" placeholder="Preco antigo" type="number" step="0.01" min="0" value="' + (p && p.priceOld ? p.priceOld : '') + '"></div>';
 h += '<div class="af-section-label">Destaques</div><div class="af-checks">';
 h += '<label class="af-check"><input type="checkbox" id="af-hot"' + (p && p.hot ? ' checked' : '') + '> Oferta</label>';
-h += '<label class="af-check"><input type="checkbox" id="af-star"' + (p && p.star ? ' checked' : '') + '> Mais vendido</label></div>';
+h += '<label class="af-check"><input type="checkbox" id="af-star"' + (p && p.star ? ' checked' : '') + '> Mais vendido</label>';
+h += '<label class="af-check"><input type="checkbox" id="af-hidden"' + (p && p.hidden ? ' checked' : '') + '> 🚫 Ocultar do site</label></div>';
 h += '<div class="af-btns"><button class="af-save" onclick="' + (p ? 'saveEdit(' + p.id + ')' : 'saveNew()') + '">Salvar</button><button class="af-cancel" onclick="cancelForm()">Cancelar</button></div>';
 return h;
 }
 
+function updateFracAdminLabels() {
+var labels = document.querySelectorAll('.fr-admin-opt');
+for (var i = 0; i < labels.length; i++) {
+var cb = labels[i].querySelector('input[type="checkbox"]');
+if (cb && cb.checked) labels[i].classList.add('checked');
+else if (labels[i]) labels[i].classList.remove('checked');
+}
+}
 function recalcPriceDisplay() {
 if (_saleType === 'kg') {
 var kg = parseFloat((_$('af-price-kg')||{}).value) || 0;
@@ -1088,6 +1168,20 @@ var p100 = kg / 10;
 disp.innerHTML = '<strong>Equivale por kg:</strong> R$ ' + kg.toFixed(2) + '  &nbsp;·&nbsp;  <strong>Por 100g:</strong> R$ ' + p100.toFixed(2);
 } else {
 disp.innerHTML = '<span class="af-calc-empty">Preencha preco/un + peso pra ver o equivalente por kg e 100g</span>';
+}
+} else if (_saleType === 'frac') {
+var fp = parseFloat((_$('af-price-frac')||{}).value) || 0;
+var cbs = document.querySelectorAll('.frac-cb:checked');
+var disp = _$('af-calc-frac'); if (!disp) return;
+if (fp > 0 && cbs.length) {
+var lines = [];
+for (var ci = 0; ci < cbs.length; ci++) {
+var fv = parseFloat(cbs[ci].dataset.fv);
+lines.push('<strong>' + fracLabel(fv) + ':</strong> R$ ' + (fp * fv).toFixed(2));
+}
+disp.innerHTML = lines.join('  &nbsp;·&nbsp;  ');
+} else {
+disp.innerHTML = '<span class="af-calc-empty">Preencha preco da inteira e marque pelo menos uma fração</span>';
 }
 } else if (_saleType === 'gramas') {
 var p100 = parseFloat((_$('af-price-gram')||{}).value) || 0;
@@ -1114,10 +1208,10 @@ _saleType = t;
 var stBtns = document.querySelectorAll('.sale-type-btn');
 for (var i = 0; i < stBtns.length; i++) stBtns[i].classList.remove('active');
 btn.classList.add('active');
-var fields = ['kg', 'un', 'bj', 'gram'];
+var fields = ['kg', 'un', 'bj', 'gram', 'frac'];
 for (var j = 0; j < fields.length; j++) {
 var el = document.getElementById('af-' + fields[j] + '-fields');
-if (el) el.style.display = (fields[j] === t || (fields[j] === 'gram' && t === 'gramas')) ? '' : 'none';
+if (el) el.style.display = (fields[j] === t || (fields[j] === 'gram' && t === 'gramas') || (fields[j] === 'frac' && t === 'frac')) ? '' : 'none';
 }
 try { recalcPriceDisplay(); } catch(e){}
 }
@@ -1377,18 +1471,31 @@ price = parseFloat(document.getElementById('af-price-un').value) || 0;
 var awu = document.getElementById('af-avgweight'); if (awu) { var au = parseInt(awu.value, 10); if (!isNaN(au) && au > 0) avgWeight = au; }
 } else if (_saleType === 'bj') {
 price = parseFloat(document.getElementById('af-price-bj').value) || 0;
+} else if (_saleType === 'frac') {
+price = parseFloat(document.getElementById('af-price-frac').value) || 0;
 } else {
 price = parseFloat(document.getElementById('af-price-gram').value) || 0;
 var goEl = document.getElementById('af-gram-opts'); gramOptions = goEl ? goEl.value : '100,200,500';
 }
+// Coletar fracOptions se for tipo frac
+var fracOptions = '';
+if (_saleType === 'frac') {
+var checked = document.querySelectorAll('.frac-cb:checked');
+var vals = [];
+for (var k = 0; k < checked.length; k++) vals.push(parseFloat(checked[k].dataset.fv));
+vals.sort(function(a,b){return b-a;});
+fracOptions = vals.join(',');
+}
 var hasPromo = document.getElementById('af-has-promo').checked;
 var priceOld = hasPromo ? (parseFloat(document.getElementById('af-price-old').value) || null) : null;
-return { emoji: (document.getElementById('af-emoji').value || '🥦').trim(), name: document.getElementById('af-name').value.trim(), price: price, priceOld: priceOld, pricePerUnit: pricePerUnit, saleType: _saleType, avgWeight: avgWeight, gramOptions: gramOptions, cat: document.getElementById('af-cat').value, hot: document.getElementById('af-hot').checked, star: document.getElementById('af-star').checked, img: _imgData };
+var hiddenEl = document.getElementById('af-hidden');
+var hidden = hiddenEl ? hiddenEl.checked : false;
+return { emoji: (document.getElementById('af-emoji').value || '🥦').trim(), name: document.getElementById('af-name').value.trim(), price: price, priceOld: priceOld, pricePerUnit: pricePerUnit, saleType: _saleType, avgWeight: avgWeight, gramOptions: gramOptions, fracOptions: fracOptions, cat: document.getElementById('af-cat').value, hot: document.getElementById('af-hot').checked, star: document.getElementById('af-star').checked, hidden: hidden, img: _imgData };
 }
 function saveNew() {
 var d = getFormVals(); if (!d.name || !d.price || !d.cat) { showToast('Preencha nome, preco e categoria'); return; }
 var maxId = 0; for (var i = 0; i < products.length; i++) { if (products[i].id > maxId) maxId = products[i].id; }
-products.push({ id: maxId + 1, emoji: d.emoji, name: d.name, price: d.price, priceOld: d.priceOld, pricePerUnit: d.pricePerUnit, saleType: d.saleType, avgWeight: d.avgWeight, gramOptions: d.gramOptions, cat: d.cat, hot: d.hot, star: d.star, img: d.img });
+products.push({ id: maxId + 1, emoji: d.emoji, name: d.name, price: d.price, priceOld: d.priceOld, pricePerUnit: d.pricePerUnit, saleType: d.saleType, avgWeight: d.avgWeight, gramOptions: d.gramOptions, fracOptions: d.fracOptions, cat: d.cat, hot: d.hot, star: d.star, hidden: d.hidden, img: d.img });
 cancelForm(); renderAdminProducts(); renderAdminStats(); renderProducts();
 showToast('Salvando...');
 saveProductsCloud(products, function(ok) {
@@ -1433,7 +1540,7 @@ function uploadToCloudinary(dataUrl, cb) {
 
 function saveEdit(id) {
 var d = getFormVals(); if (!d.name || !d.price || !d.cat) { showToast('Preencha nome, preco e categoria'); return; }
-for (var i = 0; i < products.length; i++) { if (products[i].id === id) { products[i] = { id: id, emoji: d.emoji, name: d.name, price: d.price, priceOld: d.priceOld, pricePerUnit: d.pricePerUnit, saleType: d.saleType, avgWeight: d.avgWeight, gramOptions: d.gramOptions, cat: d.cat, hot: d.hot, star: d.star, img: d.img }; break; } }
+for (var i = 0; i < products.length; i++) { if (products[i].id === id) { products[i] = { id: id, emoji: d.emoji, name: d.name, price: d.price, priceOld: d.priceOld, pricePerUnit: d.pricePerUnit, saleType: d.saleType, avgWeight: d.avgWeight, gramOptions: d.gramOptions, fracOptions: d.fracOptions, cat: d.cat, hot: d.hot, star: d.star, hidden: d.hidden, img: d.img }; break; } }
 cancelForm(); renderAdminProducts(); renderAdminStats(); renderProducts();
 showToast('Salvando...');
 saveProductsCloud(products, function(ok) {
