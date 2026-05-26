@@ -672,7 +672,7 @@ return '<div class="destaque-card"><div class="destaque-img-wrap">' + imgH + bad
 
 function renderDestaques() {
 var hot = [], star = [];
-for (var i = 0; i < products.length; i++) { /* filtro removido */ 
+for (var i = 0; i < products.length; i++) { 
 if (products[i].hot) hot.push(products[i]);
 if (products[i].star) star.push(products[i]);
 }
@@ -704,8 +704,6 @@ if (!grid) return;
 var filtered = [];
 for (var i = 0; i < products.length; i++) {
 var p = products[i];
-// filtro de hidden desativado pra evitar bug
-// if (p.hidden === true) continue;
 if (currentCat !== 'all' && p.cat !== currentCat) continue;
 if (searchTerm && p.name.toLowerCase().indexOf(searchTerm) < 0) continue;
 filtered.push(p);
