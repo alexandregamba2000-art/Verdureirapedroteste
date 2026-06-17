@@ -200,7 +200,9 @@ Enviar pedido via WhatsApp
 <div class="admin-login-icon">🥦</div>
 <h2>Verdureira do Pedro</h2>
 <p>Painel Administrativo — digite sua senha para continuar</p>
-<input class="af-input" id="admin-pw" type="password" placeholder="Senha" onkeydown="if(event.keyCode==13)adminLogin()">
+<input class="af-input" id="admin-email" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px">
+<input class="af-input" id="admin-pw" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.keyCode==13)adminLogin()">
+<div id="admin-login-err" style="color:var(--red);font-size:13px;font-weight:700;margin-top:8px;min-height:18px"></div>
 <button class="admin-login-btn" onclick="adminLogin()">Entrar no painel</button>
 <button class="admin-back-btn" onclick="closeAdmin()">← Voltar ao site</button>
 </div>
@@ -372,19 +374,17 @@ function saveOneProduct(prod,cb){
     price_old:prod.priceOld||null,price_per_unit:prod.pricePerUnit||null,
     sale_type:prod.saleType||'kg',cat:prod.cat,img:img,hot:prod.hot||false,
     star:prod.star||false,avg_weight:prod.avgWeight||null,gram_options:prod.gramOptions||'',
-    frac_options:prod.fracOptions||'',
     hidden:prod.hidden||false,sort_order:prod.sortOrder||99};
+  var _ah = sbAuthHeaders(); _ah['Content-Type']='application/json'; _ah['Prefer']='return=minimal';
   fetch(SUPABASE_URL+'/rest/v1/products?id=eq.'+prod.id,{method:'PATCH',
-    cache:'no-store',
-    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
-      'Content-Type':'application/json','Prefer':'return=minimal'},
+    cache:'no-store', headers: _ah,
     body:JSON.stringify(row)}).then(function(r){
     if(r.ok||r.status===204){if(cb)cb(true);}
-    else{fetch(SUPABASE_URL+'/rest/v1/products',{method:'POST',
-      cache:'no-store',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
-        'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify(row)}).then(function(r2){if(cb)cb(r2.ok);}).catch(function(){if(cb)cb(false);});}
+    else{
+      var _ah2 = sbAuthHeaders(); _ah2['Content-Type']='application/json'; _ah2['Prefer']='return=minimal';
+      fetch(SUPABASE_URL+'/rest/v1/products',{method:'POST',
+        cache:'no-store', headers: _ah2,
+        body:JSON.stringify(row)}).then(function(r2){if(cb)cb(r2.ok);}).catch(function(){if(cb)cb(false);});}
   }).catch(function(){if(cb)cb(false);});
 }
 var products = [];
@@ -415,6 +415,60 @@ var SITE_VERSION='202606171800';
 (function(){var sv=localStorage.getItem('vp_site_ver');if(sv!==SITE_VERSION){localStorage.removeItem('vp4_products');localStorage.removeItem('vp3_products');localStorage.setItem('vp_site_ver',SITE_VERSION);}})();
 var SUPABASE_URL = 'https://cwvyfxukayesyimvtiiy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dnlmeHVrYXllc3lpbXZ0aWl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0Mzg2NjIsImV4cCI6MjA5MjAxNDY2Mn0.pshl_4zgssNUVC5fmkaFm_NfISMGJZOXjCBNo0g5I2U';
+
+// ====== Supabase Auth (etapa 2 de seguranca) ======
+var SB_SESSION = null;
+try { var _s = localStorage.getItem('vp_sb_session'); if (_s) SB_SESSION = JSON.parse(_s); } catch(e){}
+
+function sbAuthHeaders() {
+  var tok = (SB_SESSION && SB_SESSION.access_token) ? SB_SESSION.access_token : SUPABASE_KEY;
+  return { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + tok };
+}
+function sbIsLogged() { return !!(SB_SESSION && SB_SESSION.access_token && SB_SESSION.expires_at && (Date.now()/1000) < SB_SESSION.expires_at - 30); }
+function sbSaveSession(s) {
+  if (s && s.access_token) {
+    if (!s.expires_at && s.expires_in) s.expires_at = Math.floor(Date.now()/1000) + s.expires_in;
+    SB_SESSION = s;
+    try { localStorage.setItem('vp_sb_session', JSON.stringify(s)); } catch(e){}
+  } else {
+    SB_SESSION = null;
+    try { localStorage.removeItem('vp_sb_session'); } catch(e){}
+  }
+}
+function sbLogin(email, password, cb) {
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: password })
+  }).then(function(r){ return r.json().then(function(j){ return { ok:r.ok, body:j }; }); })
+    .then(function(res){
+      if (res.ok && res.body && res.body.access_token) { sbSaveSession(res.body); cb(true, null); }
+      else { cb(false, (res.body && (res.body.error_description||res.body.msg||res.body.message)) || 'Erro ao entrar'); }
+    }).catch(function(){ cb(false, 'Falha de conexao'); });
+}
+function sbRefresh(cb) {
+  if (!SB_SESSION || !SB_SESSION.refresh_token) { cb(false); return; }
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: SB_SESSION.refresh_token })
+  }).then(function(r){ return r.json().then(function(j){ return { ok:r.ok, body:j }; }); })
+    .then(function(res){
+      if (res.ok && res.body && res.body.access_token) { sbSaveSession(res.body); cb(true); }
+      else { sbSaveSession(null); cb(false); }
+    }).catch(function(){ cb(false); });
+}
+function sbLogout(cb) {
+  var tok = SB_SESSION && SB_SESSION.access_token;
+  sbSaveSession(null);
+  if (!tok) { if (cb) cb(); return; }
+  fetch(SUPABASE_URL + '/auth/v1/logout', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + tok }
+  }).then(function(){ if (cb) cb(); }).catch(function(){ if (cb) cb(); });
+}
+// ====================================================
+
 var CLOUDINARY_CLOUD = 'dk8gtnsvt';
 var CLOUDINARY_PRESET = 'verdureira_upload';
 var _AK = [86,101,114,100,117,114,101,105,114,97,51,54,57,51,54,57];
@@ -459,20 +513,17 @@ var rows = p.map(function(prod) {
     star: prod.star || false,
     avg_weight: prod.avgWeight || null,
     gram_options: prod.gramOptions || '',
-    frac_options: prod.fracOptions || '',
     hidden: prod.hidden || false,
     sort_order: prod.sortOrder || 99
   };
 });
+var _ahU = sbAuthHeaders();
+_ahU['Content-Type'] = 'application/json';
+_ahU['Prefer'] = 'resolution=merge-duplicates,return=minimal';
 fetch(SUPABASE_URL + '/rest/v1/products?on_conflict=id', {
   method: 'POST',
   cache: 'no-store',
-  headers: {
-    'apikey': SUPABASE_KEY,
-    'Authorization': 'Bearer ' + SUPABASE_KEY,
-    'Content-Type': 'application/json',
-    'Prefer': 'resolution=merge-duplicates,return=minimal'
-  },
+  headers: _ahU,
   body: JSON.stringify(rows)
 }).then(function(r) {
   if (cb) cb(r.ok || r.status === 201 || r.status === 204);
@@ -482,10 +533,7 @@ fetch(SUPABASE_URL + '/rest/v1/products?on_conflict=id', {
 function loadFromCloud(cb) {
 fetch(SUPABASE_URL + '/rest/v1/products?select=*&order=sort_order.asc,id.asc', {
   cache: 'no-store',
-  headers: {
-    'apikey': SUPABASE_KEY,
-    'Authorization': 'Bearer ' + SUPABASE_KEY
-  }
+  headers: sbAuthHeaders()
 }).then(function(r) { return r.json(); })
 .then(function(data) {
   if (data && Array.isArray(data) && data.length > 0) {
@@ -976,20 +1024,43 @@ var bt = _$('bar-total'); if (bt) bt.textContent = 'R$ ' + total.toFixed(2);
 function getPedidos() { try { return JSON.parse(localStorage.getItem('vp_pedidos') || '[]'); } catch(e) { return []; } }
 function savePedido(total) { var p = getPedidos(); p.push({ ts: Date.now(), total: parseFloat(total.toFixed(2)) }); localStorage.setItem('vp_pedidos', JSON.stringify(p)); }
 
-function showAdmin() { var ap = _$('admin-panel'); if (ap) ap.style.display = 'block'; }
+function showAdmin() {
+  var ap = _$('admin-panel'); if (ap) ap.style.display = 'block';
+  if (sbIsLogged()) { adminEnterUI(); }
+  else if (SB_SESSION && SB_SESSION.refresh_token) {
+    sbRefresh(function(ok){ if (ok) adminEnterUI(); });
+  }
+}
 function closeAdmin() { var ap = _$('admin-panel'); if (ap) ap.style.display = 'none'; }
+function adminEnterUI() {
+  var lv = _$('admin-login-view'), mv = _$('admin-main-view');
+  if (lv) lv.style.display = 'none'; if (mv) mv.style.display = 'block';
+  renderAdminStats(); renderAdminProducts();
+}
+function adminShowLoginErr(msg) {
+  var e = _$('admin-login-err'); if (e) e.textContent = msg || '';
+}
 function adminLogin() {
-var pw = _$('admin-pw'); if (!pw) return;
-if (checkPw(pw.value)) {
-var lv = _$('admin-login-view'), mv = _$('admin-main-view');
-if (lv) lv.style.display = 'none'; if (mv) mv.style.display = 'block';
-renderAdminStats(); renderAdminProducts();
-} else {
-pw.value = ''; pw.setAttribute('placeholder', 'Senha incorreta!');
-setTimeout(function() { pw.setAttribute('placeholder', 'Senha'); }, 2200);
+  var em = _$('admin-email'), pw = _$('admin-pw');
+  if (!em || !pw) return;
+  var email = (em.value||'').trim(), password = pw.value||'';
+  if (!email || !password) { adminShowLoginErr('Preencha email e senha'); return; }
+  adminShowLoginErr('Entrando...');
+  sbLogin(email, password, function(ok, err) {
+    if (ok) { adminShowLoginErr(''); pw.value=''; adminEnterUI(); }
+    else { adminShowLoginErr(err || 'Email ou senha incorretos'); pw.value=''; }
+  });
 }
+function adminLogout() {
+  sbLogout(function() {
+    var lv = _$('admin-login-view'), mv = _$('admin-main-view'), pw = _$('admin-pw'), em = _$('admin-email');
+    if (lv) lv.style.display = 'block';
+    if (mv) mv.style.display = 'none';
+    if (pw) pw.value = ''; if (em) em.value = '';
+    adminShowLoginErr('');
+    closeAdmin();
+  });
 }
-function adminLogout() { var lv = _$('admin-login-view'), mv = _$('admin-main-view'), pw = _$('admin-pw'); if (lv) lv.style.display = 'block'; if (mv) mv.style.display = 'none'; if (pw) pw.value = ''; closeAdmin(); }
 
 function renderAdminStats() {
 var el = _$('admin-stats'); if (!el) return;
@@ -1565,7 +1636,12 @@ saveProductsCloud(products, function(ok) {
 function deleteProduct(id) {
 if (!confirm('Remover este produto?')) return;
 var np = []; for (var i = 0; i < products.length; i++) { if (products[i].id !== id) np.push(products[i]); }
-products = np; saveProducts(products); renderAdminProducts(); renderAdminStats(); renderProducts(); showToast('Produto removido');
+products = np; saveProducts(products); renderAdminProducts(); renderAdminStats(); renderProducts(); showToast('Removendo...');
+fetch(SUPABASE_URL+'/rest/v1/products?id=eq.'+id, {
+  method:'DELETE', cache:'no-store', headers: sbAuthHeaders()
+}).then(function(r){
+  showToast((r.ok||r.status===204) ? 'Produto removido' : 'Erro ao remover na nuvem');
+}).catch(function(){ showToast('Erro de conexao ao remover'); });
 }
 
 function closeAll() { var cp = _$('cart-panel'); if (cp) cp.classList.remove('open'); var co = _$('checkout-panel'); if (co) co.classList.remove('open'); var ov = _$('overlay'); if (ov) ov.classList.remove('open'); }
