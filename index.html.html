@@ -372,6 +372,7 @@ function saveOneProduct(prod,cb){
     price_old:prod.priceOld||null,price_per_unit:prod.pricePerUnit||null,
     sale_type:prod.saleType||'kg',cat:prod.cat,img:img,hot:prod.hot||false,
     star:prod.star||false,avg_weight:prod.avgWeight||null,gram_options:prod.gramOptions||'',
+    frac_options:prod.fracOptions||'',
     hidden:prod.hidden||false,sort_order:prod.sortOrder||99};
   fetch(SUPABASE_URL+'/rest/v1/products?id=eq.'+prod.id,{method:'PATCH',
     cache:'no-store',
@@ -458,6 +459,7 @@ var rows = p.map(function(prod) {
     star: prod.star || false,
     avg_weight: prod.avgWeight || null,
     gram_options: prod.gramOptions || '',
+    frac_options: prod.fracOptions || '',
     hidden: prod.hidden || false,
     sort_order: prod.sortOrder || 99
   };
