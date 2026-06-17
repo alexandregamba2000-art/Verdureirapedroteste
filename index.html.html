@@ -374,13 +374,15 @@ function saveOneProduct(prod,cb){
     star:prod.star||false,avg_weight:prod.avgWeight||null,gram_options:prod.gramOptions||'',
     hidden:prod.hidden||false,sort_order:prod.sortOrder||99};
   fetch(SUPABASE_URL+'/rest/v1/products?id=eq.'+prod.id,{method:'PATCH',
+    cache:'no-store',
     headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
-      'Content-Type':'application/json','Prefer':'return=minimal'},
+      'Content-Type':'application/json','Cache-Control':'no-cache','Prefer':'return=minimal'},
     body:JSON.stringify(row)}).then(function(r){
     if(r.ok||r.status===204){if(cb)cb(true);}
     else{fetch(SUPABASE_URL+'/rest/v1/products',{method:'POST',
+      cache:'no-store',
       headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
-        'Content-Type':'application/json','Prefer':'return=minimal'},
+        'Content-Type':'application/json','Cache-Control':'no-cache','Prefer':'return=minimal'},
       body:JSON.stringify(row)}).then(function(r2){if(cb)cb(r2.ok);}).catch(function(){if(cb)cb(false);});}
   }).catch(function(){if(cb)cb(false);});
 }
@@ -408,7 +410,7 @@ var _$ = function(id) { return document.getElementById(id); };
 var WA_NUMBER = '5548984337722';
 var SUPABASE_URL = 'https://cwvyfxukayesyimvtiiy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dnlmeHVrYXllc3lpbXZ0aWl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0Mzg2NjIsImV4cCI6MjA5MjAxNDY2Mn0.pshl_4zgssNUVC5fmkaFm_NfISMGJZOXjCBNo0g5I2U';
-var SITE_VERSION='202604171534';
+var SITE_VERSION='202606171800';
 (function(){var sv=localStorage.getItem('vp_site_ver');if(sv!==SITE_VERSION){localStorage.removeItem('vp4_products');localStorage.removeItem('vp3_products');localStorage.setItem('vp_site_ver',SITE_VERSION);}})();
 var SUPABASE_URL = 'https://cwvyfxukayesyimvtiiy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dnlmeHVrYXllc3lpbXZ0aWl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0Mzg2NjIsImV4cCI6MjA5MjAxNDY2Mn0.pshl_4zgssNUVC5fmkaFm_NfISMGJZOXjCBNo0g5I2U';
@@ -462,21 +464,30 @@ var rows = p.map(function(prod) {
 });
 fetch(SUPABASE_URL + '/rest/v1/products?on_conflict=id', {
   method: 'POST',
+  cache: 'no-store',
   headers: {
     'apikey': SUPABASE_KEY,
     'Authorization': 'Bearer ' + SUPABASE_KEY,
     'Content-Type': 'application/json',
-    'Prefer': 'resolution=merge-duplicates'
+    'Cache-Control': 'no-cache',
+    'Prefer': 'resolution=merge-duplicates,return=minimal'
   },
   body: JSON.stringify(rows)
 }).then(function(r) {
-  if (cb) cb(r.ok || r.status === 201);
+  if (cb) cb(r.ok || r.status === 201 || r.status === 204);
 }).catch(function() { if (cb) cb(false); });
 }
 
 function loadFromCloud(cb) {
-fetch(SUPABASE_URL + '/rest/v1/products?select=*&order=sort_order.asc,id.asc', {
-  headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+var _ts = Date.now();
+fetch(SUPABASE_URL + '/rest/v1/products?select=*&order=sort_order.asc,id.asc&_cb=' + _ts, {
+  cache: 'no-store',
+  headers: {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache'
+  }
 }).then(function(r) { return r.json(); })
 .then(function(data) {
   if (data && Array.isArray(data) && data.length > 0) {
@@ -1543,7 +1554,14 @@ for (var i = 0; i < products.length; i++) { if (products[i].id === id) { product
 cancelForm(); renderAdminProducts(); renderAdminStats(); renderProducts();
 showToast('Salvando...');
 saveProductsCloud(products, function(ok) {
-  showToast(ok ? '✅ Publicado! Clientes ja podem ver.' : '❌ Erro ao publicar na nuvem. Tente salvar de novo.');
+  if (ok) {
+    loadFromCloud(function(cp) {
+      if (cp && cp.length > 0) { products = cp; renderProducts(); renderAdminProducts(); renderAdminStats(); }
+      showToast('Publicado! Clientes ja podem ver.');
+    });
+  } else {
+    showToast('Erro ao publicar na nuvem. Tente salvar de novo.');
+  }
 });
 }
 function deleteProduct(id) {
